@@ -4,17 +4,115 @@
  */
 package database;
 
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+
+import java.awt.*;
+import java.util.List;
+
 /**
  *
  * @author Fauzi Amrullah
  */
 public class dashboard extends javax.swing.JFrame {
+    private ProductService productService;
+    private Cart cart;
+    private DefaultTableModel productTableModel;
+    private DefaultTableModel cartTableModel;
 
     /**
      * Creates new form dashboard
      */
     public dashboard() {
         initComponents();
+        productService = new ProductService();
+        cart = new Cart();
+        setupTables();
+    }
+
+    private void setupTables() {
+        // Setup product table
+        String[] productColumns = {"ID", "Name", "Price", "Stock"};
+        productTableModel = new DefaultTableModel(productColumns, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        jTableProducts.setModel(productTableModel);
+
+        // Setup cart table
+        String[] cartColumns = {"Product", "Quantity", "Price", "Subtotal"};
+        cartTableModel = new DefaultTableModel(cartColumns, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        jTableCart.setModel(cartTableModel);
+    }
+
+    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        String keyword = jTextFieldSearch.getText().trim();
+        if (!keyword.isEmpty()) {
+            List<Product> products = productService.searchProducts(keyword);
+            updateProductTable(products);
+        }
+    }
+
+    private void updateProductTable(List<Product> products) {
+        productTableModel.setRowCount(0);
+        for (Product product : products) {
+            Object[] row = {
+                product.getId(),
+                product.getName(),
+                product.getPrice(),
+                product.getStock()
+            };
+            productTableModel.addRow(row);
+        }
+    }
+
+    private void addToCartButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        int selectedRow = jTableProducts.getSelectedRow();
+        if (selectedRow >= 0) {
+            int productId = (int) productTableModel.getValueAt(selectedRow, 0);
+            String quantityStr = JOptionPane.showInputDialog(this, "Enter quantity:");
+            try {
+                int quantity = Integer.parseInt(quantityStr);
+                Product product = productService.getProductById(productId);
+                if (product != null && product.getStock() >= quantity) {
+                    cart.addItem(product, quantity);
+                    updateCartTable();
+                    JOptionPane.showMessageDialog(this, "Product added to cart!");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Invalid quantity or insufficient stock!");
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Please enter a valid quantity!");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Please select a product first!");
+        }
+    }
+
+    private void updateCartTable() {
+        cartTableModel.setRowCount(0);
+        List<Product> items = cart.getItems();
+        List<Integer> quantities = cart.getQuantities();
+        
+        for (int i = 0; i < items.size(); i++) {
+            Product product = items.get(i);
+            int quantity = quantities.get(i);
+            Object[] row = {
+                product.getName(),
+                quantity,
+                product.getPrice(),
+                product.getPrice() * quantity
+            };
+            cartTableModel.addRow(row);
+        }
+        jLabelTotal.setText(String.format("Total: $%.2f", cart.getTotal()));
     }
 
     /**
@@ -78,5 +176,11 @@ public class dashboard extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButtonAddToCart;
+    private javax.swing.JButton jButtonSearch;
+    private javax.swing.JLabel jLabelTotal;
+    private javax.swing.JTable jTableCart;
+    private javax.swing.JTable jTableProducts;
+    private javax.swing.JTextField jTextFieldSearch;
     // End of variables declaration//GEN-END:variables
 }

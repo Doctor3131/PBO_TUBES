@@ -4,10 +4,7 @@
  */
 package database;
 
-/**
- *
- * @author Fauzi Amrullah
- */
+
 public class account {
     private String email;
     private String password;
