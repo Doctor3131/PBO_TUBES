@@ -118,4 +118,32 @@ public class ProductService {
         }
         return null; // Kembalikan null jika produk tidak ditemukan
     }
+
+    public boolean kembalikanStokBatch(List<ProductModel> items) {
+        if (items == null || items.isEmpty()) {
+            return true; // Tidak ada yang perlu dilakukan
+        }
+        String queryUpdateStok = "UPDATE produk_elektronik SET stok = stok + ? WHERE id = ?";
+        
+        try (Connection conn = getConnection()) {
+            conn.setAutoCommit(false); // Memulai transaksi
+            try (PreparedStatement ps = conn.prepareStatement(queryUpdateStok)) {
+                for (ProductModel item : items) {
+                    ps.setInt(1, item.getStok());    // kuantitas yang dikembalikan
+                    ps.setInt(2, item.getId());      // id produk
+                    ps.addBatch();                   // Tambahkan perintah ke dalam batch
+                }
+                ps.executeBatch(); // Eksekusi semua perintah sekaligus
+                conn.commit();     // Simpan semua perubahan jika berhasil
+                return true;
+            } catch (SQLException e) {
+                System.err.println("Gagal mengembalikan stok. Transaksi dibatalkan.");
+                conn.rollback(); // Batalkan semua perubahan jika ada error
+                return false;
+            }
+        } catch (SQLException e) {
+            System.err.println("Gagal mendapatkan koneksi untuk pengembalian stok.");
+            return false;
+        }
+    }
 }

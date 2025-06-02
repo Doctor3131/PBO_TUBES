@@ -4,14 +4,15 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Scanner;
 import model.ProductModel;
-// Hapus 'import model.KeranjangItem;' jika ada
+import model.Transaksi; // Import kelas Transaksi
 
 public class FetchSearchProduct {
 
     public static void main(String[] args) {
         ProductService productService = new ProductService();
-        // PERUBAHAN: Tipe list kembali menjadi ProductModel
         List<ProductModel> keranjang = new ArrayList<>();
+        // List baru untuk log transaksi
+        List<Transaksi> daftarTransaksi = new ArrayList<>();
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
@@ -19,6 +20,9 @@ public class FetchSearchProduct {
             System.out.println("1. Tampilkan Semua Produk");
             System.out.println("2. Tambah Produk ke Keranjang");
             System.out.println("3. Lihat Keranjang");
+            System.out.println("4. Batalkan Keranjang");     // Opsi baru
+            System.out.println("5. Checkout");               // Opsi baru
+            System.out.println("6. Lihat Riwayat Transaksi"); // Opsi baru
             System.out.println("0. Keluar");
             System.out.print("--> Masukkan pilihan Anda: ");
 
@@ -29,14 +33,26 @@ public class FetchSearchProduct {
                     tampilkanSemuaProduk(productService);
                     break;
                 case "2":
-                    // PERUBAHAN: Mengirim List<ProductModel> keranjang
                     prosesTambahKeKeranjang(productService, scanner, keranjang);
                     break;
                 case "3":
-                    // PERUBAHAN: Mengirim List<ProductModel> keranjang
                     tampilkanKeranjang(keranjang);
                     break;
+                case "4":
+                    prosesPembatalanKeranjang(productService, keranjang);
+                    break;
+                case "5":
+                    prosesCheckout(keranjang, daftarTransaksi);
+                    break;
+                case "6":
+                    tampilkanRiwayatTransaksi(daftarTransaksi);
+                    break;
                 case "0":
+                    // Logika Keluar yang Aman
+                    if (!keranjang.isEmpty()) {
+                        System.out.println("Keranjang tidak kosong. Mengembalikan item ke stok sebelum keluar...");
+                        productService.kembalikanStokBatch(keranjang);
+                    }
                     System.out.println("\nTerima kasih telah menggunakan aplikasi. Sampai jumpa!");
                     scanner.close(); 
                     return; 
@@ -46,7 +62,6 @@ public class FetchSearchProduct {
             }
         }
     }
-    
     // Metode ini tidak berubah
     public static void tampilkanSemuaProduk(ProductService productService) {
         System.out.println("\nMengambil data produk terbaru...");
@@ -132,6 +147,46 @@ public class FetchSearchProduct {
             }
             System.out.println("----------------------------------------------------------------------");
             System.out.printf("TOTAL KESELURUHAN: Rp%,.2f\n", totalBelanja);
+        }
+    }
+    public static void prosesPembatalanKeranjang(ProductService productService, List<ProductModel> keranjang) {
+        if (keranjang.isEmpty()) {
+            System.out.println("Keranjang sudah kosong, tidak ada yang perlu dibatalkan.");
+            return;
+        }
+        boolean isSuccess = productService.kembalikanStokBatch(keranjang);
+        if (isSuccess) {
+            keranjang.clear(); // Kosongkan keranjang jika berhasil
+            System.out.println("Keranjang berhasil dibatalkan. Semua item telah dikembalikan ke stok.");
+        } else {
+            System.out.println("Terjadi kesalahan saat membatalkan keranjang.");
+        }
+    }
+
+    public static void prosesCheckout(List<ProductModel> keranjang, List<Transaksi> daftarTransaksi) {
+        if (keranjang.isEmpty()) {
+            System.out.println("Keranjang kosong, tidak bisa checkout.");
+            return;
+        }
+        // Buat objek transaksi baru dari isi keranjang saat ini
+        Transaksi transaksiBaru = new Transaksi(keranjang);
+        // Tambahkan ke log/riwayat
+        daftarTransaksi.add(transaksiBaru);
+        // Kosongkan keranjang
+        keranjang.clear();
+
+        System.out.println("\nCheckout Berhasil!");
+        System.out.println(transaksiBaru); // Tampilkan detail transaksi yang baru saja terjadi
+    }
+
+    public static void tampilkanRiwayatTransaksi(List<Transaksi> daftarTransaksi) {
+        System.out.println("\n--- RIWAYAT TRANSAKSI ---");
+        if (daftarTransaksi.isEmpty()) {
+            System.out.println("Belum ada transaksi yang selesai.");
+        } else {
+            for (Transaksi trx : daftarTransaksi) {
+                System.out.println(trx);
+            }
         }
     }
 }
