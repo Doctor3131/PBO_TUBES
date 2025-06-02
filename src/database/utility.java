@@ -23,7 +23,7 @@ public class utility {
                 String password = "12345678";
                 koneksi = DriverManager.getConnection(url, user, password);
                 if (koneksi != null) {
-                    System.out.println("Koneksi berhasil");
+                    System.out.println("Koneksi berhasil");1
                 }
             } catch (ClassNotFoundException one){
                 System.out.println("gagal load driver : " + one.getMessage());    
