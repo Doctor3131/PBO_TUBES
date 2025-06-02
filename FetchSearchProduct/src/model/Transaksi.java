@@ -9,13 +9,12 @@ import java.util.ArrayList;
 public class Transaksi {
     private final String idTransaksi;
     private final LocalDateTime waktuTransaksi;
-    private final List<ProductModel> items; // Salinan item saat checkout
+    private final List<ProductModel> items; 
     private final double totalBelanja;
 
     public Transaksi(List<ProductModel> keranjang) {
         this.idTransaksi = "TRX-" + System.currentTimeMillis();
         this.waktuTransaksi = LocalDateTime.now();
-        // Penting: Buat salinan keranjang agar tidak terpengaruh saat keranjang asli dikosongkan
         this.items = new ArrayList<>(keranjang); 
         this.totalBelanja = hitungTotal(keranjang);
     }
@@ -23,7 +22,7 @@ public class Transaksi {
     private double hitungTotal(List<ProductModel> keranjang) {
         double total = 0;
         for (ProductModel item : keranjang) {
-            total += item.getHarga() * item.getStok(); // Ingat: getStok() di sini adalah kuantitas
+            total += item.getHarga() * item.getStok(); 
         }
         return total;
     }

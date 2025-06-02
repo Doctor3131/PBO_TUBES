@@ -4,14 +4,13 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Scanner;
 import model.ProductModel;
-import model.Transaksi; // Import kelas Transaksi
+import model.Transaksi; 
 
 public class FetchSearchProduct {
 
     public static void main(String[] args) {
         ProductService productService = new ProductService();
         List<ProductModel> keranjang = new ArrayList<>();
-        // List baru untuk log transaksi
         List<Transaksi> daftarTransaksi = new ArrayList<>();
         Scanner scanner = new Scanner(System.in);
 
@@ -20,9 +19,9 @@ public class FetchSearchProduct {
             System.out.println("1. Tampilkan Semua Produk");
             System.out.println("2. Tambah Produk ke Keranjang");
             System.out.println("3. Lihat Keranjang");
-            System.out.println("4. Batalkan Keranjang");     // Opsi baru
-            System.out.println("5. Checkout");               // Opsi baru
-            System.out.println("6. Lihat Riwayat Transaksi"); // Opsi baru
+            System.out.println("4. Batalkan Keranjang");     
+            System.out.println("5. Checkout");               
+            System.out.println("6. Lihat Riwayat Transaksi"); 
             System.out.println("0. Keluar");
             System.out.print("--> Masukkan pilihan Anda: ");
 
@@ -33,7 +32,7 @@ public class FetchSearchProduct {
                     tampilkanSemuaProduk(productService);
                     break;
                 case "2":
-                    prosesTambahKeKeranjang(productService, scanner, keranjang);
+                    prosesTambahKeKeranjang(productService, keranjang, scanner);
                     break;
                 case "3":
                     tampilkanKeranjang(keranjang);
@@ -48,21 +47,13 @@ public class FetchSearchProduct {
                     tampilkanRiwayatTransaksi(daftarTransaksi);
                     break;
                 case "0":
-                    // Logika Keluar yang Aman
-                    if (!keranjang.isEmpty()) {
-                        System.out.println("Keranjang tidak kosong. Mengembalikan item ke stok sebelum keluar...");
-                        productService.kembalikanStokBatch(keranjang);
-                    }
-                    System.out.println("\nTerima kasih telah menggunakan aplikasi. Sampai jumpa!");
-                    scanner.close(); 
-                    return; 
+                    exit(productService, keranjang, scanner);
                 default:
                     System.out.println("\nPilihan tidak valid. Silakan coba lagi.");
                     break;
             }
         }
     }
-    // Metode ini tidak berubah
     public static void tampilkanSemuaProduk(ProductService productService) {
         System.out.println("\nMengambil data produk terbaru...");
         List<ProductModel> produkTerbaru = productService.getAllProducts();
@@ -77,8 +68,7 @@ public class FetchSearchProduct {
         }
     }
     
-    // PERUBAHAN LOGIKA UTAMA ADA DI SINI
-    public static void prosesTambahKeKeranjang(ProductService productService, Scanner scanner, List<ProductModel> keranjang) {
+    public static void prosesTambahKeKeranjang(ProductService productService, List<ProductModel> keranjang, Scanner scanner) {
         try {
             System.out.print("Masukkan ID Produk yang akan ditambahkan: ");
             int idProduk = Integer.parseInt(scanner.nextLine());
@@ -94,11 +84,9 @@ public class FetchSearchProduct {
             boolean isSuccess = productService.updateProduct(idProduk, jumlah);
 
             if (isSuccess) {
-                // Cek apakah produk sudah ada di keranjang
                 boolean itemSudahAda = false;
                 for (ProductModel itemDiKeranjang : keranjang) {
                     if (itemDiKeranjang.getId() == idProduk) {
-                        // Jika sudah ada, tambahkan kuantitasnya (yang disimpan di 'stok')
                         int kuantitasLama = itemDiKeranjang.getStok();
                         itemDiKeranjang.setStok(kuantitasLama + jumlah);
                         itemSudahAda = true;
@@ -107,11 +95,9 @@ public class FetchSearchProduct {
                     }
                 }
 
-                // Jika produk belum ada di keranjang
                 if (!itemSudahAda) {
                     ProductModel produkDariDB = productService.getProductById(idProduk);
                     if (produkDariDB != null) {
-                        // "Repurpose" field 'stok' untuk menyimpan 'jumlah' kuantitas
                         produkDariDB.setStok(jumlah);
                         keranjang.add(produkDariDB);
                         System.out.println("Produk '" + produkDariDB.getNamaProduk() + "' berhasil ditambahkan ke keranjang.");
@@ -129,20 +115,17 @@ public class FetchSearchProduct {
             System.out.println("Keranjang Anda masih kosong.");
         } else {
             double totalBelanja = 0;
+
             System.out.printf("%-4s | %-30s | %-10s | %-15s\n", "ID", "Nama Produk", "Kuantitas", "Subtotal");
             System.out.println("----------------------------------------------------------------------");
 
             for (ProductModel item : keranjang) {
-                // Di sini, item.getStok() berarti KUANTITAS, bukan sisa stok
                 int kuantitas = item.getStok();
                 double subtotal = item.getHarga() * kuantitas;
                 totalBelanja += subtotal;
 
                 System.out.printf("%-4d | %-30s | %-10d | Rp%,15.2f\n", 
-                    item.getId(), 
-                    item.getNamaProduk(), 
-                    kuantitas, // <-- menggunakan getStok() sebagai kuantitas
-                    subtotal
+                    item.getId(), item.getNamaProduk(), kuantitas, subtotal
                 );
             }
             System.out.println("----------------------------------------------------------------------");
@@ -156,7 +139,7 @@ public class FetchSearchProduct {
         }
         boolean isSuccess = productService.kembalikanStokBatch(keranjang);
         if (isSuccess) {
-            keranjang.clear(); // Kosongkan keranjang jika berhasil
+            keranjang.clear(); 
             System.out.println("Keranjang berhasil dibatalkan. Semua item telah dikembalikan ke stok.");
         } else {
             System.out.println("Terjadi kesalahan saat membatalkan keranjang.");
@@ -168,15 +151,12 @@ public class FetchSearchProduct {
             System.out.println("Keranjang kosong, tidak bisa checkout.");
             return;
         }
-        // Buat objek transaksi baru dari isi keranjang saat ini
         Transaksi transaksiBaru = new Transaksi(keranjang);
-        // Tambahkan ke log/riwayat
         daftarTransaksi.add(transaksiBaru);
-        // Kosongkan keranjang
         keranjang.clear();
 
         System.out.println("\nCheckout Berhasil!");
-        System.out.println(transaksiBaru); // Tampilkan detail transaksi yang baru saja terjadi
+        System.out.println(transaksiBaru); 
     }
 
     public static void tampilkanRiwayatTransaksi(List<Transaksi> daftarTransaksi) {
@@ -188,5 +168,23 @@ public class FetchSearchProduct {
                 System.out.println(trx);
             }
         }
+    }
+
+    public static void exit(ProductService productService, List<ProductModel> keranjang, Scanner scanner) {
+        if (!keranjang.isEmpty()) {
+            System.out.println("Keranjang tidak kosong. Mengembalikan item ke stok sebelum keluar...");
+            
+            boolean isSuccess = productService.kembalikanStokBatch(keranjang);
+            
+            if (!isSuccess) {
+                System.err.println("PERINGATAN: Terjadi kegagalan saat mencoba mengembalikan stok produk.");
+            } else {
+                System.out.println("Semua item berhasil dikembalikan ke stok.");
+            }
+        }
+        System.out.println("\nTerima kasih telah menggunakan aplikasi. Sampai jumpa!");
+        scanner.close(); 
+        
+        System.exit(0); 
     }
 }
