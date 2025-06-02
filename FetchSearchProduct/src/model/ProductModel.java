@@ -24,61 +24,61 @@ public class ProductModel {
         this.harga = harga;
     }
 
-    // public int getId() {
-    //     return id;
-    // }
+    public int getId() {
+        return id;
+    }
 
-    // public void setId(int id) {
-    //     this.id = id;
-    // }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-    // public String getSku() {
-    //     return sku;
-    // }
+    public String getSku() {
+        return sku;
+    }
 
-    // public void setSku(String sku) {
-    //     this.sku = sku;
-    // }
+    public void setSku(String sku) {
+        this.sku = sku;
+    }
 
-    // public String getNamaProduk() {
-    //     return namaProduk;
-    // }
+    public String getNamaProduk() {
+        return namaProduk;
+    }
 
-    // public void setNamaProduk(String namaProduk) {
-    //     this.namaProduk = namaProduk;
-    // }
+    public void setNamaProduk(String namaProduk) {
+        this.namaProduk = namaProduk;
+    }
 
-    // public String getKategori() {
-    //     return kategori;
-    // }
+    public String getKategori() {
+        return kategori;
+    }
 
-    // public void setKategori(String kategori) {
-    //     this.kategori = kategori;
-    // }
+    public void setKategori(String kategori) {
+        this.kategori = kategori;
+    }
     
-    // public String getDeskripsi() {
-    //     return deskripsi;
-    // }
+    public String getDeskripsi() {
+        return deskripsi;
+    }
 
-    // public void setDeskripsi(String deskripsi) {
-    //     this.deskripsi = deskripsi;
-    // }
+    public void setDeskripsi(String deskripsi) {
+        this.deskripsi = deskripsi;
+    }
 
-    // public double getHarga() {
-    //     return harga;
-    // }
+    public double getHarga() {
+        return harga;
+    }
 
-    // public void setHarga(double harga) {
-    //     this.harga = harga;
-    // }
+    public void setHarga(double harga) {
+        this.harga = harga;
+    }
 
-    // public int getStok() {
-    //     return stok;
-    // }
+    public int getStok() {
+        return stok;
+    }
 
-    // public void setStok(int stok) {
-    //     this.stok = stok;
-    // }
+    public void setStok(int stok) {
+        this.stok = stok;
+    }
 
     @Override
     public String toString() {
