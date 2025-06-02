@@ -4,13 +4,10 @@
  */
 package database;
 
-/**
- *
- * @author Fauzi Amrullah
- */
 public class account {
     private String email;
     private String password;
+    private String alamat;
     private int saldo;
 
     // Constructor default
@@ -19,9 +16,10 @@ public class account {
     }
 
     // Constructor dengan parameter
-    public account(String email, String password, int saldo) {
+    public account(String email, String password, String alamat,int saldo) {
         this.email = email;
         this.password = password;
+        this.alamat = alamat;
         this.saldo = saldo;
     }
     
@@ -40,6 +38,14 @@ public class account {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+    
+    public String getAlamat() {
+        return alamat;
+    }
+
+    public void setAlamat(String alamat) {
+        this.alamat = alamat;
     }
 
     // Getter dan Setter untuk saldo

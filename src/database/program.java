@@ -14,7 +14,7 @@ public class program {
         
         // insert
         System.out.println("===Insert");
-        account addCustomer = new account("ninaaja@gmail.com", "apaya", 800);
+        account addCustomer = new account("ninaaja@gmail.com", "apaya","kaksksk", 800);
         service.add(addCustomer);
         System.out.println("berhasil insert" + addCustomer); 
     }
