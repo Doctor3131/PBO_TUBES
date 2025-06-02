@@ -1,4 +1,4 @@
-package fetchsearchproduct;
+package appTerminal;
 
 import java.util.List;
 import java.util.ArrayList;
