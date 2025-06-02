@@ -18,12 +18,12 @@ public class utility {
         if (koneksi == null ) {
             try {
                 Class.forName("com.mysql.jdbc.Driver");
-                String url = "jdbc:mysql://localhost:3307/datapbo";
+                String url = "jdbc:mysql://localhost:3306/sirielshop";
                 String user = "root";
-                String password = "12345678";
+                String password = "Profesor_31";
                 koneksi = DriverManager.getConnection(url, user, password);
                 if (koneksi != null) {
-                    System.out.println("Koneksi berhasil");1
+                    System.out.println("Koneksi berhasil");
                 }
             } catch (ClassNotFoundException one){
                 System.out.println("gagal load driver : " + one.getMessage());    
