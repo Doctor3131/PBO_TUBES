@@ -1,4 +1,3 @@
-// Simpan sebagai Transaksi.java (disarankan di dalam package model)
 package model;
 
 import java.time.LocalDateTime;
@@ -9,19 +8,19 @@ import java.util.ArrayList;
 public class Transaksi {
     private final String idTransaksi;
     private final LocalDateTime waktuTransaksi;
-    private final List<ProductModel> items; 
+    private final List<Produk> items; 
     private final double totalBelanja;
 
-    public Transaksi(List<ProductModel> keranjang) {
+    public Transaksi(List<Produk> keranjang) {
         this.idTransaksi = "TRX-" + System.currentTimeMillis();
         this.waktuTransaksi = LocalDateTime.now();
         this.items = new ArrayList<>(keranjang); 
         this.totalBelanja = hitungTotal(keranjang);
     }
 
-    private double hitungTotal(List<ProductModel> keranjang) {
+    private double hitungTotal(List<Produk> keranjang) {
         double total = 0;
-        for (ProductModel item : keranjang) {
+        for (Produk item : keranjang) {
             total += item.getHarga() * item.getStok(); 
         }
         return total;
@@ -36,7 +35,7 @@ public class Transaksi {
         detail.append("Waktu : ").append(waktuTransaksi.format(formatter)).append("\n");
         detail.append("Total : Rp").append(String.format("%,.2f", totalBelanja)).append("\n");
         detail.append("Items : \n");
-        for (ProductModel item : items) {
+        for (Produk item : items) {
             detail.append(String.format("  -> (ID: %d) %s - %d pcs\n", item.getId(), item.getNamaProduk(), item.getStok()));
         }
         return detail.toString();

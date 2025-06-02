@@ -1,5 +1,5 @@
 package model; 
-public class ProductModel {
+public class Produk {
     private int id;
     private String sku;
     private String namaProduk;
@@ -8,7 +8,7 @@ public class ProductModel {
     private double harga;
     private int stok;
 
-    public ProductModel(int id, String sku, String namaProduk, String kategori, String deskripsi, double harga, int stok) {
+    public Produk(int id, String sku, String namaProduk, String kategori, String deskripsi, double harga, int stok) {
         this.id = id;
         this.sku = sku;
         this.namaProduk = namaProduk;
@@ -18,7 +18,7 @@ public class ProductModel {
         this.stok = stok;
     }
 
-    public ProductModel(int id, String nama, double harga) {
+    public Produk(int id, String nama, double harga) {
         this.id = id;
         this.namaProduk = nama;
         this.harga = harga;

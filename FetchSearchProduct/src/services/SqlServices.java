@@ -1,4 +1,4 @@
-package fetchsearchproduct;
+package services;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,9 +8,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.PreparedStatement;
-import model.ProductModel;
+import model.Produk;
 
-public class ProductService {
+public class SqlServices {
     private Connection getConnection() throws SQLException {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -23,8 +23,8 @@ public class ProductService {
         }
     }
 
-    public List<ProductModel> getAllProducts() {
-        List<ProductModel> productList = new ArrayList<>();
+    public List<Produk> getAllProducts() {
+        List<Produk> productList = new ArrayList<>();
         try (Connection terkoneksi = getConnection();
              Statement query = terkoneksi.createStatement();
              ResultSet hasil = query.executeQuery("SELECT * FROM produk_elektronik")) {
@@ -37,7 +37,7 @@ public class ProductService {
                 String deskripsi = hasil.getString("deskripsi");
                 double harga = hasil.getDouble("harga");
                 int stok = hasil.getInt("stok");
-                productList.add(new ProductModel(id, sku, namaProduk, kategori, deskripsi, harga, stok));
+                productList.add(new Produk(id, sku, namaProduk, kategori, deskripsi, harga, stok));
             }
         } catch (SQLException e) {
             System.err.println("Error saat mengambil data produk: " + e.getMessage());
@@ -94,7 +94,7 @@ public class ProductService {
         }
     }
 
-    public ProductModel getProductById(int productId) {
+    public Produk getProductById(int productId) {
         String query = "SELECT * FROM produk_elektronik WHERE id = ?";
         try (Connection conn = getConnection();
             PreparedStatement ps = conn.prepareStatement(query)) {
@@ -102,7 +102,7 @@ public class ProductService {
             ps.setInt(1, productId);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return new ProductModel(
+                    return new Produk(
                         rs.getInt("id"),
                         rs.getString("sku"),
                         rs.getString("nama_produk"),
@@ -116,29 +116,29 @@ public class ProductService {
         } catch (SQLException e) {
             System.err.println("Error saat mencari produk by ID: " + e.getMessage());
         }
-        return null; // Kembalikan null jika produk tidak ditemukan
+        return null; 
     }
 
-    public boolean kembalikanStokBatch(List<ProductModel> items) {
+    public boolean revertKeranjang(List<Produk> items) {
         if (items == null || items.isEmpty()) {
-            return true; // Tidak ada yang perlu dilakukan
+            return true; 
         }
         String queryUpdateStok = "UPDATE produk_elektronik SET stok = stok + ? WHERE id = ?";
         
         try (Connection conn = getConnection()) {
-            conn.setAutoCommit(false); // Memulai transaksi
+            conn.setAutoCommit(false); 
             try (PreparedStatement ps = conn.prepareStatement(queryUpdateStok)) {
-                for (ProductModel item : items) {
-                    ps.setInt(1, item.getStok());    // kuantitas yang dikembalikan
-                    ps.setInt(2, item.getId());      // id produk
-                    ps.addBatch();                   // Tambahkan perintah ke dalam batch
+                for (Produk item : items) {
+                    ps.setInt(1, item.getStok());   
+                    ps.setInt(2, item.getId());      
+                    ps.addBatch();                   
                 }
-                ps.executeBatch(); // Eksekusi semua perintah sekaligus
-                conn.commit();     // Simpan semua perubahan jika berhasil
+                ps.executeBatch(); 
+                conn.commit();     
                 return true;
             } catch (SQLException e) {
                 System.err.println("Gagal mengembalikan stok. Transaksi dibatalkan.");
-                conn.rollback(); // Batalkan semua perubahan jika ada error
+                conn.rollback(); 
                 return false;
             }
         } catch (SQLException e) {
