@@ -18,9 +18,9 @@ public class utility {
         if (koneksi == null ) {
             try {
                 Class.forName("com.mysql.jdbc.Driver");
-                String url = "jdbc:mysql://localhost:3306/sirielshop";
+                String url = "jdbc:mysql://localhost:3307/datapbo";
                 String user = "root";
-                String password = "Profesor_31";
+                String password = "12345678";
                 koneksi = DriverManager.getConnection(url, user, password);
                 if (koneksi != null) {
                     System.out.println("Koneksi berhasil");
