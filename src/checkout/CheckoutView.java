@@ -69,7 +69,7 @@ public class CheckoutView extends javax.swing.JFrame {
     }
 
     public void showCheckoutStatus(boolean status) {
-        String message = status ? "Checkout berhasil!" : "Checkout gagal. Silakan coba lagi.";
+        String message = status ? "Checkout berhasil!" : "Checkout gagal. Saldo tidak cukup.";
         String title = status ? "Berhasil" : "Gagal";
         
         int option = JOptionPane.showOptionDialog(
@@ -85,7 +85,7 @@ public class CheckoutView extends javax.swing.JFrame {
 
         // Kalau user klik tombol
         if (option == 0) {
-            this.dash.dashboard();
+            dash = new dashboard();
         }
     }
 
