@@ -8,22 +8,38 @@ import java.util.ArrayList;
 public class Transaksi {
     private final String idTransaksi;
     private final LocalDateTime waktuTransaksi;
-    private final List<Produk> items; 
+    private final List<CartItem> items; 
     private final double totalBelanja;
 
-    public Transaksi(List<Produk> keranjang) {
+    public Transaksi(List<CartItem> keranjang) {
         this.idTransaksi = "TRX-" + System.currentTimeMillis();
         this.waktuTransaksi = LocalDateTime.now();
         this.items = new ArrayList<>(keranjang); 
         this.totalBelanja = hitungTotal(keranjang);
     }
 
-    private double hitungTotal(List<Produk> keranjang) {
+    private double hitungTotal(List<CartItem> keranjang) {
         double total = 0;
-        for (Produk item : keranjang) {
-            total += item.getHarga() * item.getStok(); 
+        for (CartItem item : keranjang) {
+            total += item.getSubtotal(); 
         }
         return total;
+    }
+
+    public String getIdTransaksi() {
+        return idTransaksi;
+    }
+
+    public LocalDateTime getWaktuTransaksi() {
+        return waktuTransaksi;
+    }
+
+    public List<CartItem> getItems() {
+        return new ArrayList<>(items); 
+    }
+
+    public double getTotalBelanja() {
+        return totalBelanja;
     }
 
     @Override
@@ -35,8 +51,13 @@ public class Transaksi {
         detail.append("Waktu : ").append(waktuTransaksi.format(formatter)).append("\n");
         detail.append("Total : Rp").append(String.format("%,.2f", totalBelanja)).append("\n");
         detail.append("Items : \n");
-        for (Produk item : items) {
-            detail.append(String.format("  -> (ID: %d) %s - %d pcs\n", item.getId(), item.getNamaProduk(), item.getStok()));
+        for (CartItem item : items) {
+            detail.append(String.format("  -> (ID: %d) %s - %d pcs @ Rp%,.2f = Rp%,.2f\n",
+                    item.getProduk().getId(),
+                    item.getProduk().getNamaProduk(),
+                    item.getQuantity(),
+                    item.getProduk().getHarga(),
+                    item.getSubtotal()));
         }
         return detail.toString();
     }
