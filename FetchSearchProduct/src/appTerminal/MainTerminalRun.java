@@ -6,7 +6,7 @@ import java.util.Scanner;
 import model.*;
 import services.*;
 
-public class MainTerminalView {
+public class MainTerminalRun {
 
     public static void main(String[] args) {
         SqlServices productService = new SqlServices();
