@@ -1,9 +1,7 @@
 package UI;
 
-import java.util.ArrayList;
-import java.util.List;
+
 import services.*;
-import model.*;
 import javax.swing.JOptionPane;
 
 public class login extends javax.swing.JFrame {
