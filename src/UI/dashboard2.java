@@ -16,21 +16,16 @@ public class dashboard2 extends javax.swing.JFrame {
     private JScrollPane scrollPane;
     private final List<CartItem> keranjang = new ArrayList<>();
     private final ProductServices productServices;
-    private final SqlServices sqlServices;
     private JTextField searchField;
 
     public dashboard2() {
-        // Initialize services
         this.productServices = new ProductServices(new SqlServices());
-        this.sqlServices = new SqlServices();
 
-        // Setup Frame
         setTitle("Dashboard Produk");
         setSize(800, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Build the UI and display products
         initDashboardLayout();
         tampilkanProduk("");
     }
@@ -38,7 +33,6 @@ public class dashboard2 extends javax.swing.JFrame {
     private void initDashboardLayout() {
         setLayout(new BorderLayout());
 
-        // Top Panel
         JPanel panelAtas = new JPanel(new BorderLayout());
         panelAtas.setBackground(new Color(0, 83, 154));
         panelAtas.setPreferredSize(new Dimension(400, 50));
@@ -49,7 +43,6 @@ public class dashboard2 extends javax.swing.JFrame {
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
         panelAtas.add(titleLabel, BorderLayout.WEST);
 
-        // Top Panel Buttons
         JPanel tombolPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         tombolPanel.setOpaque(false);
         searchField = new JTextField(15);
@@ -57,8 +50,16 @@ public class dashboard2 extends javax.swing.JFrame {
         JButton btnKeranjang = new JButton("Lihat Keranjang");
 
         btnCari.addActionListener(e -> tampilkanProduk(searchField.getText()));
-        // Correctly opens the keranjang window
-        btnKeranjang.addActionListener(e -> new keranjang(keranjang, productServices, sqlServices).setVisible(true));
+
+        // ** THIS IS THE KEY CHANGE **
+        btnKeranjang.addActionListener(e -> {
+            // Create the modal dialog, passing 'this' frame as its parent
+            keranjang cartDialog = new keranjang(this, keranjang, productServices);
+            cartDialog.setVisible(true); // Code execution pauses here until the dialog is closed
+
+            // After the dialog is closed, this code runs, refreshing the product list.
+            tampilkanProduk(searchField.getText());
+        });
 
         tombolPanel.add(new JLabel("Cari Produk:"));
         tombolPanel.add(searchField);
@@ -68,7 +69,6 @@ public class dashboard2 extends javax.swing.JFrame {
         panelAtas.add(tombolPanel, BorderLayout.EAST);
         add(panelAtas, BorderLayout.NORTH);
 
-        // Center Panel for Products
         panelProduk = new JPanel();
         panelProduk.setLayout(new BoxLayout(panelProduk, BoxLayout.Y_AXIS));
         scrollPane = new JScrollPane(panelProduk);
@@ -86,14 +86,12 @@ public class dashboard2 extends javax.swing.JFrame {
             return;
         }
 
-        // Filter by keyword if provided
         if (keyword != null && !keyword.isEmpty()) {
             produkList = produkList.stream()
                 .filter(p -> p.getNamaProduk().toLowerCase().contains(keyword.toLowerCase()))
                 .collect(Collectors.toList());
         }
 
-        // Create UI for each product
         for (Produk p : produkList) {
             JPanel panel = new JPanel(new BorderLayout());
             panel.setBorder(BorderFactory.createCompoundBorder(
@@ -123,7 +121,6 @@ public class dashboard2 extends javax.swing.JFrame {
                         int quantity = Integer.parseInt(quantityStr);
                         int status = productServices.addItemToCart(keranjang, p.getId(), quantity);
                         handleAddToCartStatus(status, p.getNamaProduk());
-                        // This line refreshes the product list to show the updated stock
                         tampilkanProduk(searchField.getText());
                     } catch (NumberFormatException ex) {
                         JOptionPane.showMessageDialog(this, "Jumlah harus berupa angka.", "Input Tidak Valid", JOptionPane.ERROR_MESSAGE);
@@ -153,6 +150,7 @@ public class dashboard2 extends javax.swing.JFrame {
     }
     
     private void handleAddToCartStatus(int status, String productName) {
+        // (This method remains the same as before)
         switch (status) {
             case 0:
                 JOptionPane.showMessageDialog(this, "Produk '" + productName + "' berhasil ditambahkan.", "Sukses", JOptionPane.INFORMATION_MESSAGE);
@@ -349,11 +347,7 @@ public class dashboard2 extends javax.swing.JFrame {
     private void jButtonCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCariActionPerformed
     }//GEN-LAST:event_jButtonCariActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-
-     public static void main(String args[]) {
+    public static void main(String args[]) {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -369,6 +363,7 @@ public class dashboard2 extends javax.swing.JFrame {
             new dashboard2().setVisible(true);
         });
     }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonCari;

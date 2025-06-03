@@ -7,26 +7,24 @@ import model.CartItem;
 import model.Produk;
 import model.Transaksi;
 import services.ProductServices;
-import services.SqlServices;
 
-public class keranjang extends javax.swing.JFrame {
+// Changed to extend JDialog
+public class keranjang extends javax.swing.JDialog {
     private final List<CartItem> cartItems;
     private final ProductServices productServices;
-    private final SqlServices sqlServices;
-    private final Component parentFrame;
     private JPanel panelIsi;
     private JLabel totalLabel;
 
-    public keranjang(List<CartItem> cartItems, ProductServices productServices, SqlServices sqlServices) {
+    // Updated constructor to accept a parent Frame, making it a modal dialog
+    public keranjang(Frame parent, List<CartItem> cartItems, ProductServices productServices) {
+        super(parent, "Keranjang Belanja", true); // Call to super makes it modal
         this.cartItems = cartItems;
         this.productServices = productServices;
-        this.sqlServices = sqlServices;
-        this.parentFrame = null; // Assuming this dialog is modal to the dashboard
 
         setTitle("Keranjang Belanja");
         setSize(500, 400);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(parentFrame);
+        setLocationRelativeTo(parent);
 
         initComponents1();
         tampilkanIsiKeranjang();
@@ -35,13 +33,11 @@ public class keranjang extends javax.swing.JFrame {
     private void initComponents1() {
         setLayout(new BorderLayout());
 
-        // Panel Atas
         JPanel panelAtas = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         panelAtas.setBackground(new Color(240, 240, 240));
         panelAtas.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY));
 
         JButton btnHapus = new JButton("Kosongkan Keranjang");
-
         btnHapus.addActionListener(e -> clearCart());
 
         JButton btnKembali = new JButton("Kembali");
@@ -52,7 +48,6 @@ public class keranjang extends javax.swing.JFrame {
 
         add(panelAtas, BorderLayout.NORTH);
 
-        // Panel Isi Keranjang
         panelIsi = new JPanel();
         panelIsi.setLayout(new BoxLayout(panelIsi, BoxLayout.Y_AXIS));
         panelIsi.setBackground(Color.WHITE);
@@ -60,12 +55,10 @@ public class keranjang extends javax.swing.JFrame {
         scrollPane.setBorder(BorderFactory.createEmptyBorder());
         add(scrollPane, BorderLayout.CENTER);
 
-        // Panel Bawah
         JPanel panelBawah = new JPanel(new BorderLayout());
         panelBawah.setBackground(new Color(0, 83, 154));
         panelBawah.setPreferredSize(new Dimension(0, 50));
         panelBawah.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
-
 
         totalLabel = new JLabel("Total : Rp0.00");
         totalLabel.setForeground(Color.WHITE);
@@ -133,10 +126,10 @@ public class keranjang extends javax.swing.JFrame {
         panelIsi.repaint();
     }
     
-    private boolean clearCart() {
+    private void clearCart() {
         if (cartItems.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Keranjang sudah kosong.", "Info", JOptionPane.INFORMATION_MESSAGE);
-            return false;
+            return;
         }
 
         int confirm = JOptionPane.showConfirmDialog(this, 
@@ -148,16 +141,11 @@ public class keranjang extends javax.swing.JFrame {
             if (isSuccess) {
                 cartItems.clear();
                 JOptionPane.showMessageDialog(this, "Keranjang berhasil dikosongkan.", "Sukses", JOptionPane.INFORMATION_MESSAGE);
-                tampilkanIsiKeranjang(); // Refresh view
-                this.dispose(); // Close after clearing
-                return productServices.cancelCart(cartItems);
+                this.dispose(); // Close the dialog
             } else {
                 JOptionPane.showMessageDialog(this, "Gagal mengembalikan stok. Keranjang tidak dapat dikosongkan.", "Error", JOptionPane.ERROR_MESSAGE);
-                
             }
         }
-
-        return false;
     }
 
     private void performCheckout() {
@@ -182,6 +170,7 @@ public class keranjang extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Gagal melakukan checkout.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
+
 
 
     /**
@@ -418,7 +407,7 @@ public class keranjang extends javax.swing.JFrame {
             }
 
             // Create and show the cart frame with the test data
-            new keranjang(testCart, productServices, sqlServices).setVisible(true);
+            // new keranjang(testCart, productServices).setVisible(true);
         });
     }
 

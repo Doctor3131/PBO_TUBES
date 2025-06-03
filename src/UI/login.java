@@ -65,18 +65,18 @@ public class login extends javax.swing.JFrame {
         setBackground(new java.awt.Color(153, 255, 153));
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
-        jLabelNamaSistem.setFont(new java.awt.Font("ROG Fonts", 1, 18)); // NOI18N
+        jLabelNamaSistem.setFont(new java.awt.Font("ROG Fonts", 1, 18)); 
         jLabelNamaSistem.setText("SIRIEL SHOP");
 
-        jLabelEmail.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabelEmail.setFont(new java.awt.Font("Segoe UI", 0, 14)); 
         jLabelEmail.setText("Email");
 
         jTextFieldEmail.setToolTipText("");
 
-        jLabelPassword.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabelPassword.setFont(new java.awt.Font("Segoe UI", 0, 14)); 
         jLabelPassword.setText("Password");
 
-        jButtonLogin.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jButtonLogin.setFont(new java.awt.Font("Segoe UI", 1, 14)); 
         jButtonLogin.setText("LOGIN");
         jButtonLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -126,26 +126,24 @@ public class login extends javax.swing.JFrame {
         );
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }
 
-    private void jButtonLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLoginActionPerformed
+    private void jButtonLoginActionPerformed(java.awt.event.ActionEvent evt) {
         String email = jTextFieldEmail.getText().trim();
         String password = jTextFieldPassword.getText().trim();
 
-        // Cek apakah user input kosong
         if (email.equals("masukkan username") || email.isEmpty() || password.equals("masukkan password") || password.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Mohon isi semua field", "Peringatan", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        // Cek ke database
-        SqlServices service = new SqlServices(); // buat objek service
+        SqlServices service = new SqlServices();
         boolean acc = service.cekUser(email, password);
 
         if (acc) {
             JOptionPane.showMessageDialog(null, "Login berhasil!");
-            new MainFrame().setVisible(true); // buka frame login
-            dispose(); // tutup frame saat ini
+            new dashboard2().setVisible(true);
+            dispose(); 
         } else {
             JOptionPane.showMessageDialog(null, "Email atau password salah", "Login Gagal", JOptionPane.ERROR_MESSAGE);
         }
