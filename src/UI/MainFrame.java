@@ -24,7 +24,7 @@ public class MainFrame extends JFrame {
         SqlServices sqlServices = new SqlServices();
         productServices = new ProductServices(sqlServices);
 
-        setTitle("Aplikasi Manajemen Produk");
+        setTitle("Siriel Shop");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
