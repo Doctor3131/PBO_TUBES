@@ -11,8 +11,6 @@ public class login extends javax.swing.JFrame {
     public login() {
         initComponents();
         
-        SqlServices service = new SqlServices();
-        
         jTextFieldEmail.setText("masukkan username");
         jTextFieldEmail.setForeground(java.awt.Color.GRAY);
 
@@ -54,8 +52,6 @@ public class login extends javax.swing.JFrame {
     }
 
     
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jLabelNamaSistem = new javax.swing.JLabel();
