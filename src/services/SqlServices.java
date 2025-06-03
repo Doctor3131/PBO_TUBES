@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Properties;
 import model.Produk;
 import model.CartItem;
+import javax.swing.JOptionPane;
 
 public class SqlServices {
 
@@ -158,6 +159,27 @@ public class SqlServices {
                 return false;
             }
         } catch (SQLException e) {
+            return false;
+        }
+    }
+    public boolean cekUser(String email, String password) {
+
+        String query = "SELECT password FROM accounts WHERE email = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+    
+            ps.setString(1, email);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    String storedPassword = rs.getString("password");
+                    return password.equals(storedPassword);
+                } else {
+                    return false;
+                }
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Terjadi kesalahan saat koneksi ke database: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
             return false;
         }
     }
