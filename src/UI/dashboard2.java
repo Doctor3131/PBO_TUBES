@@ -1,35 +1,36 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package UI;
 
 import javax.swing.*;
 import java.awt.*;
-import java.sql.*;
 import java.util.ArrayList;
-import java.util.List; 
+import java.util.List;
 import java.util.stream.Collectors;
-
+import model.CartItem;
+import model.Produk;
+import services.ProductServices;
+import services.SqlServices;
 
 public class dashboard2 extends javax.swing.JFrame {
 
     private JPanel panelProduk;
     private JScrollPane scrollPane;
-    private cart keranjang;
-    private service servis;
-    private account user;
+    private final List<CartItem> keranjang = new ArrayList<>();
+    private final ProductServices productServices;
+    private final SqlServices sqlServices;
     private JTextField searchField;
 
-    public dashboard2(account user) {
-        this.user = user;
-        this.keranjang = new cart();
-        this.servis = new service();
+    public dashboard2() {
+        // Initialize services
+        this.productServices = new ProductServices(new SqlServices());
+        this.sqlServices = new SqlServices();
 
+        // Setup Frame
         setTitle("Dashboard Produk");
-        setSize(400, 300);
+        setSize(800, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
 
+        // Build the UI and display products
         initDashboardLayout();
         tampilkanProduk("");
     }
@@ -37,24 +38,29 @@ public class dashboard2 extends javax.swing.JFrame {
     private void initDashboardLayout() {
         setLayout(new BorderLayout());
 
-        // Panel Atas
+        // Top Panel
         JPanel panelAtas = new JPanel(new BorderLayout());
         panelAtas.setBackground(new Color(0, 83, 154));
         panelAtas.setPreferredSize(new Dimension(400, 50));
+        panelAtas.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
-        JLabel saldoLabel = new JLabel("Saldo : " + user.getSaldo());
-        saldoLabel.setForeground(Color.WHITE);
-        saldoLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        panelAtas.add(saldoLabel, BorderLayout.WEST);
+        JLabel titleLabel = new JLabel("Siriel Shop");
+        titleLabel.setForeground(Color.WHITE);
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        panelAtas.add(titleLabel, BorderLayout.WEST);
 
+        // Top Panel Buttons
         JPanel tombolPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        searchField = new JTextField(10);
+        tombolPanel.setOpaque(false);
+        searchField = new JTextField(15);
         JButton btnCari = new JButton("Cari");
-        JButton btnKeranjang = new JButton("Keranjang");
+        JButton btnKeranjang = new JButton("Lihat Keranjang");
 
         btnCari.addActionListener(e -> tampilkanProduk(searchField.getText()));
-        btnKeranjang.addActionListener(e -> new keranjang(user,keranjang).setVisible(true));
+        // Correctly opens the keranjang window
+        btnKeranjang.addActionListener(e -> new keranjang(keranjang, productServices, sqlServices).setVisible(true));
 
+        tombolPanel.add(new JLabel("Cari Produk:"));
         tombolPanel.add(searchField);
         tombolPanel.add(btnCari);
         tombolPanel.add(btnKeranjang);
@@ -62,10 +68,9 @@ public class dashboard2 extends javax.swing.JFrame {
         panelAtas.add(tombolPanel, BorderLayout.EAST);
         add(panelAtas, BorderLayout.NORTH);
 
-        // Panel Produk
+        // Center Panel for Products
         panelProduk = new JPanel();
         panelProduk.setLayout(new BoxLayout(panelProduk, BoxLayout.Y_AXIS));
-
         scrollPane = new JScrollPane(panelProduk);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -74,47 +79,71 @@ public class dashboard2 extends javax.swing.JFrame {
 
     private void tampilkanProduk(String keyword) {
         panelProduk.removeAll();
-        List<Product> produkList = servis.loadProdukDariDatabase();
+        List<Produk> produkList = productServices.getAllProducts();
 
-        if (!keyword.isEmpty()) {
+        if (produkList == null) {
+            JOptionPane.showMessageDialog(this, "Gagal memuat produk dari database.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Filter by keyword if provided
+        if (keyword != null && !keyword.isEmpty()) {
             produkList = produkList.stream()
-                .filter(p -> p.getNama().toLowerCase().contains(keyword.toLowerCase()))
+                .filter(p -> p.getNamaProduk().toLowerCase().contains(keyword.toLowerCase()))
                 .collect(Collectors.toList());
         }
 
-        for (Product p : produkList) {
+        // Create UI for each product
+        for (Produk p : produkList) {
             JPanel panel = new JPanel(new BorderLayout());
-            panel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-            panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
+            panel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY),
+                BorderFactory.createEmptyBorder(10, 10, 10, 10))
+            );
+            panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 70));
             panel.setBackground(Color.WHITE);
 
-            JLabel nama = new JLabel(p.getNama());
-            nama.setFont(new Font("Segoe UI", Font.BOLD, 18));
+            JLabel nama = new JLabel(p.getNamaProduk());
+            nama.setFont(new Font("Segoe UI", Font.BOLD, 16));
 
-            JLabel harga = new JLabel("Harga : Rp. " + p.getHarga());
+            JLabel harga = new JLabel(String.format("Rp%,.2f", p.getHarga()));
             harga.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-            harga.setHorizontalAlignment(SwingConstants.RIGHT);
+            
+            JLabel stok = new JLabel("Stok: " + p.getStok());
+            stok.setFont(new Font("Segoe UI", Font.ITALIC, 12));
 
-            JButton btnTambah = new JButton("Tambah");
+            JButton btnTambah = new JButton("Tambah ke Keranjang");
             btnTambah.setBackground(new Color(51, 102, 255));
             btnTambah.setForeground(Color.WHITE);
-            btnTambah.setPreferredSize(new Dimension(80, 30));
+            btnTambah.setCursor(new Cursor(Cursor.HAND_CURSOR));
             btnTambah.addActionListener(e -> {
-                keranjang.tambahProduk(p);
-                JOptionPane.showMessageDialog(this, p.getNama() + " ditambahkan ke keranjang!");
+                String quantityStr = JOptionPane.showInputDialog(this, "Masukkan Jumlah untuk " + p.getNamaProduk() + ":", "Tambah Keranjang", JOptionPane.PLAIN_MESSAGE);
+                if (quantityStr != null && !quantityStr.isEmpty()) {
+                    try {
+                        int quantity = Integer.parseInt(quantityStr);
+                        int status = productServices.addItemToCart(keranjang, p.getId(), quantity);
+                        handleAddToCartStatus(status, p.getNamaProduk());
+                        // This line refreshes the product list to show the updated stock
+                        tampilkanProduk(searchField.getText());
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(this, "Jumlah harus berupa angka.", "Input Tidak Valid", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
             });
 
-            JPanel kiri = new JPanel(new BorderLayout());
-            kiri.setOpaque(false);
-            kiri.add(nama, BorderLayout.WEST);
+            JPanel infoPanel = new JPanel();
+            infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+            infoPanel.setOpaque(false);
+            infoPanel.add(nama);
+            infoPanel.add(stok);
 
-            JPanel kanan = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-            kanan.setOpaque(false);
-            kanan.add(harga);
-            kanan.add(btnTambah);
+            JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+            actionPanel.setOpaque(false);
+            actionPanel.add(harga);
+            actionPanel.add(btnTambah);
 
-            panel.add(kiri, BorderLayout.WEST);
-            panel.add(kanan, BorderLayout.EAST);
+            panel.add(infoPanel, BorderLayout.CENTER);
+            panel.add(actionPanel, BorderLayout.EAST);
 
             panelProduk.add(panel);
         }
@@ -122,6 +151,32 @@ public class dashboard2 extends javax.swing.JFrame {
         panelProduk.revalidate();
         panelProduk.repaint();
     }
+    
+    private void handleAddToCartStatus(int status, String productName) {
+        switch (status) {
+            case 0:
+                JOptionPane.showMessageDialog(this, "Produk '" + productName + "' berhasil ditambahkan.", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+                break;
+            case 1:
+                JOptionPane.showMessageDialog(this, "Error: Produk tidak ditemukan.", "Error", JOptionPane.ERROR_MESSAGE);
+                break;
+            case 2:
+                JOptionPane.showMessageDialog(this, "Error: Stok tidak mencukupi untuk '" + productName + "'.", "Error", JOptionPane.ERROR_MESSAGE);
+                break;
+            case 3:
+                JOptionPane.showMessageDialog(this, "Error: Terjadi kesalahan pada database.", "Error", JOptionPane.ERROR_MESSAGE);
+                break;
+            case 4:
+                JOptionPane.showMessageDialog(this, "Error: Jumlah produk harus lebih dari 0.", "Error", JOptionPane.ERROR_MESSAGE);
+                break;
+            default:
+                JOptionPane.showMessageDialog(this, "Error: Terjadi kesalahan tidak diketahui.", "Error", JOptionPane.ERROR_MESSAGE);
+                break;
+        }
+    }
+
+
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -292,18 +347,13 @@ public class dashboard2 extends javax.swing.JFrame {
 
 
     private void jButtonCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCariActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_jButtonCariActionPerformed
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
+
+     public static void main(String args[]) {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -311,23 +361,12 @@ public class dashboard2 extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(dashboard2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(dashboard2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(dashboard2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (Exception ex) {
             java.util.logging.Logger.getLogger(dashboard2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                account dummyUser = new account("test@mail.com", "1234", "alamat", 100000);
-                new dashboard2(dummyUser).setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new dashboard2().setVisible(true);
         });
     }
 

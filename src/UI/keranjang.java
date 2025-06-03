@@ -1,28 +1,32 @@
-
-package database;
+package UI;
 
 import javax.swing.*;
 import java.awt.*;
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
-
-
+import model.CartItem;
+import model.Produk;
+import model.Transaksi;
+import services.ProductServices;
+import services.SqlServices;
 
 public class keranjang extends javax.swing.JFrame {
-    private cart keranjang;
-    private account user;
+    private final List<CartItem> cartItems;
+    private final ProductServices productServices;
+    private final SqlServices sqlServices;
+    private final Component parentFrame;
     private JPanel panelIsi;
     private JLabel totalLabel;
-    private JLabel saldoLabel;
 
-    public keranjang(account user, cart keranjang) {
-        this.keranjang = keranjang;
-        this.user = user;
+    public keranjang(List<CartItem> cartItems, ProductServices productServices, SqlServices sqlServices) {
+        this.cartItems = cartItems;
+        this.productServices = productServices;
+        this.sqlServices = sqlServices;
+        this.parentFrame = null; // Assuming this dialog is modal to the dashboard
 
         setTitle("Keranjang Belanja");
-        setSize(400, 300);
+        setSize(500, 400);
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        setLocationRelativeTo(parentFrame);
 
         initComponents1();
         tampilkanIsiKeranjang();
@@ -31,82 +35,154 @@ public class keranjang extends javax.swing.JFrame {
     private void initComponents1() {
         setLayout(new BorderLayout());
 
-        JPanel panelAtas = new JPanel(new BorderLayout());
-        panelAtas.setBackground(new Color(0, 83, 154));
-        panelAtas.setPreferredSize(new Dimension(400, 40));
+        // Panel Atas
+        JPanel panelAtas = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        panelAtas.setBackground(new Color(240, 240, 240));
+        panelAtas.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY));
 
-        saldoLabel = new JLabel("Saldo : " + user.getSaldo());
-        saldoLabel.setForeground(Color.WHITE);
-        saldoLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        panelAtas.add(saldoLabel, BorderLayout.WEST);
+        JButton btnHapus = new JButton("Kosongkan Keranjang");
 
-        JPanel tombolPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton btnHapus = new JButton("hapus");
-        JButton btnKembali = new JButton("kembali");
+        btnHapus.addActionListener(e -> clearCart());
 
-        btnHapus.addActionListener(e -> {
-            keranjang.getDaftarProduk().clear();
-            tampilkanIsiKeranjang();
-        });
-
+        JButton btnKembali = new JButton("Kembali");
         btnKembali.addActionListener(e -> this.dispose());
 
-        tombolPanel.add(btnHapus);
-        tombolPanel.add(btnKembali);
-        panelAtas.add(tombolPanel, BorderLayout.EAST);
+        panelAtas.add(btnHapus);
+        panelAtas.add(btnKembali);
 
         add(panelAtas, BorderLayout.NORTH);
 
+        // Panel Isi Keranjang
         panelIsi = new JPanel();
         panelIsi.setLayout(new BoxLayout(panelIsi, BoxLayout.Y_AXIS));
+        panelIsi.setBackground(Color.WHITE);
         JScrollPane scrollPane = new JScrollPane(panelIsi);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
         add(scrollPane, BorderLayout.CENTER);
 
-        JPanel panelBawah = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        // Panel Bawah
+        JPanel panelBawah = new JPanel(new BorderLayout());
         panelBawah.setBackground(new Color(0, 83, 154));
+        panelBawah.setPreferredSize(new Dimension(0, 50));
+        panelBawah.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
 
-        totalLabel = new JLabel("Total : 0");
+
+        totalLabel = new JLabel("Total : Rp0.00");
         totalLabel.setForeground(Color.WHITE);
         totalLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
 
         JButton btnCheckout = new JButton("Checkout");
-        btnCheckout.addActionListener(e -> JOptionPane.showMessageDialog(this, "Proses checkout dilakukan!"));
+        btnCheckout.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        btnCheckout.addActionListener(e -> performCheckout());
 
-        panelBawah.add(totalLabel);
-        panelBawah.add(btnCheckout);
+        panelBawah.add(totalLabel, BorderLayout.CENTER);
+        panelBawah.add(btnCheckout, BorderLayout.EAST);
 
         add(panelBawah, BorderLayout.SOUTH);
     }
 
     private void tampilkanIsiKeranjang() {
         panelIsi.removeAll();
-        int total = 0;
+        double total = 0;
 
-        List<Product> produkList = keranjang.getDaftarProduk();
-        for (Product p : produkList) {
-            JPanel panel = new JPanel(new BorderLayout());
-            panel.setBackground(Color.WHITE);
-            panel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
+        if (cartItems.isEmpty()) {
+            JLabel emptyLabel = new JLabel("Keranjang Anda kosong.");
+            emptyLabel.setHorizontalAlignment(SwingConstants.CENTER);
+            emptyLabel.setFont(new Font("Segoe UI", Font.ITALIC, 16));
+            emptyLabel.setForeground(Color.GRAY);
+            panelIsi.setLayout(new BorderLayout());
+            panelIsi.add(emptyLabel, BorderLayout.CENTER);
+        } else {
+            panelIsi.setLayout(new BoxLayout(panelIsi, BoxLayout.Y_AXIS));
+            for (CartItem item : cartItems) {
+                Produk p = item.getProduk();
+                JPanel panel = new JPanel(new BorderLayout());
+                panel.setBackground(Color.WHITE);
+                panel.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY),
+                    BorderFactory.createEmptyBorder(5, 10, 5, 10))
+                );
+                panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
 
-            JLabel nama = new JLabel(p.getNama());
-            nama.setFont(new Font("Segoe UI", Font.BOLD, 16));
+                JLabel nama = new JLabel(p.getNamaProduk());
+                nama.setFont(new Font("Segoe UI", Font.BOLD, 14));
 
-            JLabel harga = new JLabel("Rp. " + p.getHarga());
-            harga.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+                String detail = String.format("%d pcs @ Rp%,.2f", item.getQuantity(), p.getHarga());
+                JLabel harga = new JLabel(detail);
+                harga.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+                
+                JPanel infoPanel = new JPanel();
+                infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+                infoPanel.setOpaque(false);
+                infoPanel.add(nama);
+                infoPanel.add(harga);
 
-            panel.add(nama, BorderLayout.WEST);
-            panel.add(harga, BorderLayout.EAST);
+                JLabel subtotal = new JLabel(String.format("Rp%,.2f", item.getSubtotal()));
+                subtotal.setFont(new Font("Segoe UI", Font.BOLD, 14));
 
-            panelIsi.add(panel);
-            total += p.getHarga();
+                panel.add(infoPanel, BorderLayout.CENTER);
+                panel.add(subtotal, BorderLayout.EAST);
+
+                panelIsi.add(panel);
+                total += item.getSubtotal();
+            }
         }
 
-        totalLabel.setText("Total : " + total);
+        totalLabel.setText(String.format("Total : Rp%,.2f", total));
         panelIsi.revalidate();
         panelIsi.repaint();
     }
+    
+    private boolean clearCart() {
+        if (cartItems.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Keranjang sudah kosong.", "Info", JOptionPane.INFORMATION_MESSAGE);
+            return false;
+        }
+
+        int confirm = JOptionPane.showConfirmDialog(this, 
+                "Anda yakin ingin mengosongkan keranjang? Stok akan dikembalikan.", 
+                "Konfirmasi", JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            boolean isSuccess = productServices.cancelCart(cartItems);
+            if (isSuccess) {
+                cartItems.clear();
+                JOptionPane.showMessageDialog(this, "Keranjang berhasil dikosongkan.", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+                tampilkanIsiKeranjang(); // Refresh view
+                this.dispose(); // Close after clearing
+                return productServices.cancelCart(cartItems);
+            } else {
+                JOptionPane.showMessageDialog(this, "Gagal mengembalikan stok. Keranjang tidak dapat dikosongkan.", "Error", JOptionPane.ERROR_MESSAGE);
+                
+            }
+        }
+
+        return false;
+    }
+
+    private void performCheckout() {
+        if (cartItems.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Keranjang kosong, tidak bisa checkout.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Transaksi transaksiBaru = productServices.processCheckout(cartItems);
+        if (transaksiBaru != null) {
+            cartItems.clear();
+            
+            JTextArea transactionDetails = new JTextArea(transaksiBaru.toString());
+            transactionDetails.setEditable(false);
+            transactionDetails.setBackground(this.getBackground());
+            JScrollPane scrollPane = new JScrollPane(transactionDetails);
+            scrollPane.setPreferredSize(new Dimension(400, 300));
+            
+            JOptionPane.showMessageDialog(this, scrollPane, "Checkout Berhasil!", JOptionPane.INFORMATION_MESSAGE);
+            this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(this, "Gagal melakukan checkout.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -293,21 +369,56 @@ public class keranjang extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButtonCheckoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCheckoutActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_jButtonCheckoutActionPerformed
 
-    /**
+/**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(keranjang.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+
+        /* Create and display the form */
+        // This main method is for testing purposes.
         java.awt.EventQueue.invokeLater(() -> {
-            account dummyUser = new account();
-            cart dummyCart = new cart();
-            new keranjang(dummyUser, dummyCart).setVisible(true);
+            // Setup services required by the keranjang frame
+            services.SqlServices sqlServices = new services.SqlServices();
+            services.ProductServices productServices = new services.ProductServices(sqlServices);
+            
+            // Create a dummy list of cart items for testing
+            java.util.List<model.CartItem> testCart = new java.util.ArrayList<>();
+
+            // Add a sample product to the cart for demonstration
+            // This assumes products with these IDs exist in your database
+            model.Produk sampleProduct1 = sqlServices.getProductById(1);
+            if (sampleProduct1 != null) {
+                testCart.add(new model.CartItem(sampleProduct1, 2));
+            }
+
+            model.Produk sampleProduct2 = sqlServices.getProductById(3);
+            if (sampleProduct2 != null) {
+                testCart.add(new model.CartItem(sampleProduct2, 1));
+            }
+
+            // Create and show the cart frame with the test data
+            new keranjang(testCart, productServices, sqlServices).setVisible(true);
         });
     }
 
