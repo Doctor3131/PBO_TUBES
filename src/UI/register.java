@@ -12,7 +12,7 @@ public class register extends javax.swing.JFrame {
     public register() {
         initComponents();
         
-        // service service = new service();
+        SqlServices service = new SqlServices();
         
         jTextFieldEmail.setText("masukkan username");
         jTextFieldEmail.setForeground(java.awt.Color.GRAY);
