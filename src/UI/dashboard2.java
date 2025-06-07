@@ -1,13 +1,16 @@
+// src/UI/dashboard2.java
 package UI;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import services.SqlServices; // Directly import SqlServices
 import controllers.DashboardController;
-import controllers.CartController;
 import models.CartItem;
 import models.Produk;
+import controllers.CartController;
 
 public class dashboard2 extends javax.swing.JFrame {
 
@@ -16,9 +19,11 @@ public class dashboard2 extends javax.swing.JFrame {
     private final List<CartItem> keranjang = new ArrayList<>();
     private final DashboardController dashboardController;
     private JTextField searchField;
+    private SqlServices sqlServices; // Keep a reference to SqlServices for CartController initialization
 
     public dashboard2() {
-        this.dashboardController = new DashboardController(keranjang);
+        this.sqlServices = new SqlServices(); // Initialize SqlServices directly here
+        this.dashboardController = new DashboardController(keranjang); // DashboardController already initializes its own SqlServices
         dashboardController.setAddToCartStatusCallback(this::handleAddToCartStatus);
 
         setTitle("Dashboard Produk");
@@ -52,7 +57,8 @@ public class dashboard2 extends javax.swing.JFrame {
         btnCari.addActionListener(e -> tampilkanProduk(searchField.getText()));
 
         btnKeranjang.addActionListener(e -> {
-            CartController cartController = new CartController(keranjang);
+            // Pass the cart items and the SqlServices instance to the CartController
+            CartController cartController = new CartController(keranjang, sqlServices);
             keranjang cartDialog = new keranjang(this, cartController);
             cartDialog.setVisible(true);
 
@@ -235,7 +241,7 @@ public class dashboard2 extends javax.swing.JFrame {
             }
         });
 
-        jButtonKeranjang.setFont(new java.awt.Font("Segoe UI", 0, 8)); 
+        jButtonKeranjang.setFont(new java.awt.Font("Segoe UI", 0, 8)); // NOI18N
         jButtonKeranjang.setText("keranjang");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
