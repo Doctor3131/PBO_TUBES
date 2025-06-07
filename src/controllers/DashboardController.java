@@ -1,9 +1,8 @@
 package controllers;
 
 import services.ProductServices;
-import services.SqlServices; // Needed for ProductServices constructor
 import java.util.List;
-import java.util.function.Consumer; // For callback to update UI
+import java.util.function.Consumer; 
 
 import models.CartItem;
 import models.Produk;

@@ -1,14 +1,18 @@
 package UI;
-
-import controllers.LoginController; // Import the new controller
+import controllers.LoginController; 
 
 public class login extends javax.swing.JFrame {
 
-    private LoginController loginController; // Declare the controller
+    private LoginController loginController; 
 
     public login() {
+        setTitle("Login");
+        setSize(800, 600);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
         initComponents();
-        loginController = new LoginController(this); // Initialize the controller, passing the current frame
+        loginController = new LoginController(this); 
 
         jTextFieldEmail.setText("masukkan username");
         jTextFieldEmail.setForeground(java.awt.Color.GRAY);
@@ -51,7 +55,6 @@ public class login extends javax.swing.JFrame {
     }
 
     private void initComponents() {
-        // ... (existing initComponents code remains the same)
         jLabelNamaSistem = new javax.swing.JLabel();
         jLabelEmail = new javax.swing.JLabel();
         jTextFieldEmail = new javax.swing.JTextField();

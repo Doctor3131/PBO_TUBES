@@ -2,7 +2,6 @@ package controllers;
 
 import services.ProductServices;
 import java.util.List;
-
 import models.CartItem;
 import models.Transaksi;
 
@@ -10,9 +9,9 @@ public class CartController {
     private final ProductServices productServices;
     private final List<CartItem> cartItems;
 
-    public CartController(List<CartItem> cartItems, ProductServices productServices) {
+    public CartController(List<CartItem> cartItems) {
         this.cartItems = cartItems;
-        this.productServices = productServices;
+        this.productServices = new ProductServices();
     }
 
     public boolean clearCart() {
