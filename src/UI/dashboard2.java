@@ -1,16 +1,13 @@
-// src/UI/dashboard2.java
 package UI;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import services.SqlServices; // Directly import SqlServices
 import controllers.DashboardController;
+import controllers.CartController;
 import models.CartItem;
 import models.Produk;
-import controllers.CartController;
 
 public class dashboard2 extends javax.swing.JFrame {
 
@@ -19,11 +16,9 @@ public class dashboard2 extends javax.swing.JFrame {
     private final List<CartItem> keranjang = new ArrayList<>();
     private final DashboardController dashboardController;
     private JTextField searchField;
-    private SqlServices sqlServices; // Keep a reference to SqlServices for CartController initialization
 
     public dashboard2() {
-        this.sqlServices = new SqlServices(); // Initialize SqlServices directly here
-        this.dashboardController = new DashboardController(keranjang); // DashboardController already initializes its own SqlServices
+        this.dashboardController = new DashboardController(keranjang);
         dashboardController.setAddToCartStatusCallback(this::handleAddToCartStatus);
 
         setTitle("Dashboard Produk");
@@ -57,8 +52,7 @@ public class dashboard2 extends javax.swing.JFrame {
         btnCari.addActionListener(e -> tampilkanProduk(searchField.getText()));
 
         btnKeranjang.addActionListener(e -> {
-            // Pass the cart items and the SqlServices instance to the CartController
-            CartController cartController = new CartController(keranjang, sqlServices);
+            CartController cartController = new CartController(keranjang);
             keranjang cartDialog = new keranjang(this, cartController);
             cartDialog.setVisible(true);
 
@@ -165,185 +159,6 @@ public class dashboard2 extends javax.swing.JFrame {
 
     private void handleAddToCartStatus(String message) {
         JOptionPane.showMessageDialog(this, message);
-    }
-
-    private javax.swing.JButton jButtonCari;
-    private javax.swing.JButton jButtonKeranjang;
-    private javax.swing.JButton jButtonTambah;
-    private javax.swing.JLabel jLabelHarga;
-    private javax.swing.JLabel jLabelInfoHarga;
-    private javax.swing.JLabel jLabelInfoSaldo;
-    private javax.swing.JLabel jLabelNamaProduk;
-    private javax.swing.JLabel jLabelSaldo;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanelProduk;
-    private javax.swing.JTextField jTextFieldCari;
-
-
-
-    private void initComponents() {
-
-        jPanel1 = new javax.swing.JPanel();
-        jLabelSaldo = new javax.swing.JLabel();
-        jLabelInfoSaldo = new javax.swing.JLabel();
-        jPanel2 = new javax.swing.JPanel();
-        jTextFieldCari = new javax.swing.JTextField();
-        jButtonCari = new javax.swing.JButton();
-        jButtonKeranjang = new javax.swing.JButton();
-        jPanelProduk = new javax.swing.JPanel();
-        jButtonTambah = new javax.swing.JButton();
-        jLabelNamaProduk = new javax.swing.JLabel();
-        jLabelHarga = new javax.swing.JLabel();
-        jLabelInfoHarga = new javax.swing.JLabel();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        jPanel1.setBackground(new java.awt.Color(0, 102, 255));
-
-        jLabelSaldo.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabelSaldo.setForeground(new java.awt.Color(255, 255, 255));
-        jLabelSaldo.setText("Saldo ");
-
-        jLabelInfoSaldo.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabelInfoSaldo.setForeground(new java.awt.Color(255, 255, 255));
-        jLabelInfoSaldo.setText("100000");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabelInfoSaldo)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabelSaldo)
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabelSaldo)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabelInfoSaldo)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jPanel2.setBackground(new java.awt.Color(0, 51, 255));
-
-        jButtonCari.setText("Cari");
-        jButtonCari.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonCariActionPerformed(evt);
-            }
-        });
-
-        jButtonKeranjang.setFont(new java.awt.Font("Segoe UI", 0, 8)); // NOI18N
-        jButtonKeranjang.setText("keranjang");
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jButtonKeranjang, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jTextFieldCari, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButtonCari, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButtonKeranjang, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jTextFieldCari, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButtonCari))))
-                .addContainerGap())
-        );
-
-        jPanelProduk.setBackground(new java.awt.Color(255, 255, 255));
-
-        jButtonTambah.setBackground(new java.awt.Color(51, 102, 255));
-        jButtonTambah.setFont(new java.awt.Font("Segoe UI", 0, 8));
-        jButtonTambah.setForeground(new java.awt.Color(255, 255, 255));
-        jButtonTambah.setText(" tambah");
-
-        jLabelNamaProduk.setFont(new java.awt.Font("Segoe UI", 1, 18));
-        jLabelNamaProduk.setText("Risol Mayo");
-
-        jLabelHarga.setText("Harga : Rp.");
-
-        jLabelInfoHarga.setText("500");
-
-        javax.swing.GroupLayout jPanelProdukLayout = new javax.swing.GroupLayout(jPanelProduk);
-        jPanelProduk.setLayout(jPanelProdukLayout);
-        jPanelProdukLayout.setHorizontalGroup(
-            jPanelProdukLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelProdukLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabelNamaProduk)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabelHarga)
-                .addGap(10, 10, 10)
-                .addComponent(jLabelInfoHarga)
-                .addGap(18, 18, 18)
-                .addComponent(jButtonTambah)
-                .addContainerGap())
-        );
-        jPanelProdukLayout.setVerticalGroup(
-            jPanelProdukLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelProdukLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanelProdukLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonTambah, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
-                    .addComponent(jLabelNamaProduk)
-                    .addComponent(jLabelHarga)
-                    .addComponent(jLabelInfoHarga))
-                .addContainerGap())
-        );
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanelProduk, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanelProduk, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(193, Short.MAX_VALUE))
-        );
-
-        pack();
-    }
-
-
-    private void jButtonCariActionPerformed(java.awt.event.ActionEvent evt) {
     }
 
     public static void main(String args[]) {
