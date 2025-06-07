@@ -10,6 +10,10 @@ public class login extends javax.swing.JFrame {
     private LoginController loginController;
 
     public login() {
+        setTitle("Dashboard Produk");
+        setSize(800, 600);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
         initComponents();
         loginController = new LoginController(); // Initialize controller without passing the frame
 

@@ -1,9 +1,12 @@
+// src/UI/dashboard2.java
 package UI;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import services.SqlServices; // Directly import SqlServices
 import controllers.DashboardController;
 import models.CartItem;
 import models.Produk;
@@ -16,10 +19,12 @@ public class dashboard2 extends javax.swing.JFrame {
     private final List<CartItem> keranjang = new ArrayList<>();
     private final DashboardController dashboardController;
     private JTextField searchField;
+    private SqlServices sqlServices; // Keep a reference to SqlServices for CartController initialization
 
     public dashboard2() {
-        this.dashboardController = new DashboardController(keranjang);
-        dashboardController.setAddToCartStatusCallback(this::handleAddToCartStatus); // Updated callback type
+        this.sqlServices = new SqlServices(); // Initialize SqlServices directly here
+        this.dashboardController = new DashboardController(keranjang); // DashboardController already initializes its own SqlServices
+        dashboardController.setAddToCartStatusCallback(this::handleAddToCartStatus);
 
         setTitle("Dashboard Produk");
         setSize(800, 600);
@@ -52,7 +57,8 @@ public class dashboard2 extends javax.swing.JFrame {
         btnCari.addActionListener(e -> tampilkanProduk(searchField.getText()));
 
         btnKeranjang.addActionListener(e -> {
-            CartController cartController = new CartController(keranjang);
+            // Pass the cart items and the SqlServices instance to the CartController
+            CartController cartController = new CartController(keranjang, sqlServices);
             keranjang cartDialog = new keranjang(this, cartController);
             cartDialog.setVisible(true);
 
@@ -77,7 +83,7 @@ public class dashboard2 extends javax.swing.JFrame {
 
     private void tampilkanProduk(String keyword) {
         panelProduk.removeAll();
-        List<Produk> produkList = dashboardController.getFilteredProducts(keyword); 
+        List<Produk> produkList = dashboardController.getFilteredProducts(keyword);
 
         if (produkList == null) {
             JOptionPane.showMessageDialog(this, "Gagal memuat produk dari database.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -89,7 +95,7 @@ public class dashboard2 extends javax.swing.JFrame {
             noResultsLabel.setHorizontalAlignment(SwingConstants.CENTER);
             noResultsLabel.setFont(new Font("Segoe UI", Font.ITALIC, 16));
             noResultsLabel.setForeground(Color.GRAY);
-            panelProduk.setLayout(new BorderLayout()); 
+            panelProduk.setLayout(new BorderLayout());
             panelProduk.add(noResultsLabel, BorderLayout.CENTER);
         } else if (produkList.isEmpty()) {
             JLabel emptyLabel = new JLabel("Tidak ada produk tersedia saat ini.");
@@ -99,7 +105,7 @@ public class dashboard2 extends javax.swing.JFrame {
             panelProduk.setLayout(new BorderLayout());
             panelProduk.add(emptyLabel, BorderLayout.CENTER);
         } else {
-            panelProduk.setLayout(new BoxLayout(panelProduk, BoxLayout.Y_AXIS)); 
+            panelProduk.setLayout(new BoxLayout(panelProduk, BoxLayout.Y_AXIS));
             for (Produk p : produkList) {
                 JPanel panel = new JPanel(new BorderLayout());
                 panel.setBorder(BorderFactory.createCompoundBorder(
@@ -127,8 +133,8 @@ public class dashboard2 extends javax.swing.JFrame {
                     if (quantityStr != null && !quantityStr.isEmpty()) {
                         try {
                             int quantity = Integer.parseInt(quantityStr);
-                            dashboardController.addItemToCart(p.getId(), quantity); // Delegate to controller
-                            tampilkanProduk(searchField.getText()); // Refresh view after adding
+                            dashboardController.addItemToCart(p.getId(), quantity);
+                            tampilkanProduk(searchField.getText());
                         } catch (NumberFormatException ex) {
                             JOptionPane.showMessageDialog(this, "Jumlah harus berupa angka.", "Input Tidak Valid", JOptionPane.ERROR_MESSAGE);
                         }
@@ -157,10 +163,23 @@ public class dashboard2 extends javax.swing.JFrame {
         panelProduk.repaint();
     }
 
-    // This method remains in the View as it's purely for UI feedback
-    private void handleAddToCartStatus(String message) { // Updated to receive a message
+    private void handleAddToCartStatus(String message) {
         JOptionPane.showMessageDialog(this, message);
     }
+
+    private javax.swing.JButton jButtonCari;
+    private javax.swing.JButton jButtonKeranjang;
+    private javax.swing.JButton jButtonTambah;
+    private javax.swing.JLabel jLabelHarga;
+    private javax.swing.JLabel jLabelInfoHarga;
+    private javax.swing.JLabel jLabelInfoSaldo;
+    private javax.swing.JLabel jLabelNamaProduk;
+    private javax.swing.JLabel jLabelSaldo;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanelProduk;
+    private javax.swing.JTextField jTextFieldCari;
+
 
 
     private void initComponents() {
@@ -343,18 +362,4 @@ public class dashboard2 extends javax.swing.JFrame {
             new dashboard2().setVisible(true);
         });
     }
-
-
-    private javax.swing.JButton jButtonCari;
-    private javax.swing.JButton jButtonKeranjang;
-    private javax.swing.JButton jButtonTambah;
-    private javax.swing.JLabel jLabelHarga;
-    private javax.swing.JLabel jLabelInfoHarga;
-    private javax.swing.JLabel jLabelInfoSaldo;
-    private javax.swing.JLabel jLabelNamaProduk;
-    private javax.swing.JLabel jLabelSaldo;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanelProduk;
-    private javax.swing.JTextField jTextFieldCari;
 }

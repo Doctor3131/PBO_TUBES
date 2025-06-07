@@ -4,16 +4,17 @@ package UI;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
-import controllers.CartController; 
+import controllers.CartController;
 import models.CartItem;
 import models.Produk;
 import models.Transaksi;
 
 public class keranjang extends javax.swing.JDialog {
-    private final CartController cartController; 
+    private final CartController cartController;
     private JPanel panelIsi;
     private JLabel totalLabel;
 
+    // Constructor now takes CartController
     public keranjang(Frame parent, CartController cartController) {
         super(parent, "Keranjang Belanja", true);
         this.cartController = cartController;
@@ -74,7 +75,7 @@ public class keranjang extends javax.swing.JDialog {
     private void tampilkanIsiKeranjang() {
         panelIsi.removeAll();
         double total = 0;
-        List<CartItem> cartItems = cartController.getCartItems(); 
+        List<CartItem> cartItems = cartController.getCartItems();
 
         if (cartItems.isEmpty()) {
             JLabel emptyLabel = new JLabel("Keranjang Anda kosong.");
@@ -125,7 +126,7 @@ public class keranjang extends javax.swing.JDialog {
     }
 
     private void clearCart() {
-        List<CartItem> cartItems = cartController.getCartItems(); 
+        List<CartItem> cartItems = cartController.getCartItems();
         if (cartItems.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Keranjang sudah kosong.", "Info", JOptionPane.INFORMATION_MESSAGE);
             return;
@@ -136,11 +137,10 @@ public class keranjang extends javax.swing.JDialog {
                 "Konfirmasi", JOptionPane.YES_NO_OPTION);
 
         if (confirm == JOptionPane.YES_OPTION) {
-            boolean isSuccess = cartController.clearCart(); 
+            boolean isSuccess = cartController.clearCart();
             if (isSuccess) {
-                cartItems.clear(); 
                 JOptionPane.showMessageDialog(this, "Keranjang berhasil dikosongkan.", "Sukses", JOptionPane.INFORMATION_MESSAGE);
-                this.dispose(); 
+                this.dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Gagal mengembalikan stok. Keranjang tidak dapat dikosongkan.", "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -148,16 +148,14 @@ public class keranjang extends javax.swing.JDialog {
     }
 
     private void performCheckout() {
-        List<CartItem> cartItems = cartController.getCartItems(); 
+        List<CartItem> cartItems = cartController.getCartItems();
         if (cartItems.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Keranjang kosong, tidak bisa checkout.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        Transaksi transaksiBaru = cartController.performCheckout(); 
+        Transaksi transaksiBaru = cartController.performCheckout();
         if (transaksiBaru != null) {
-            cartItems.clear(); 
-
             JTextArea transactionDetails = new JTextArea(transaksiBaru.toString());
             transactionDetails.setEditable(false);
             transactionDetails.setBackground(this.getBackground());
@@ -170,7 +168,6 @@ public class keranjang extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Gagal melakukan checkout.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
 
     private void initComponents() {
 
@@ -193,11 +190,11 @@ public class keranjang extends javax.swing.JDialog {
         jPanel1.setBackground(new java.awt.Color(0, 83, 154));
         jPanel1.setPreferredSize(new java.awt.Dimension(390, 37));
 
-        jLabelSaldo.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabelSaldo.setFont(new java.awt.Font("Segoe UI", 0, 18));
         jLabelSaldo.setForeground(new java.awt.Color(255, 255, 255));
         jLabelSaldo.setText("Saldo :");
 
-        jLabelInfoSaldo.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabelInfoSaldo.setFont(new java.awt.Font("Segoe UI", 0, 18));
         jLabelInfoSaldo.setForeground(new java.awt.Color(255, 255, 255));
         jLabelInfoSaldo.setText("100000");
 
@@ -242,11 +239,11 @@ public class keranjang extends javax.swing.JDialog {
         jPanel2.setBackground(new java.awt.Color(0, 83, 154));
         jPanel2.setPreferredSize(new java.awt.Dimension(390, 37));
 
-        jLabelTotal.setFont(new java.awt.Font("Segoe UI", 0, 18)); 
+        jLabelTotal.setFont(new java.awt.Font("Segoe UI", 0, 18));
         jLabelTotal.setForeground(new java.awt.Color(255, 255, 255));
         jLabelTotal.setText("Total :");
 
-        jLabelInfoTotal.setFont(new java.awt.Font("Segoe UI", 0, 18)); 
+        jLabelInfoTotal.setFont(new java.awt.Font("Segoe UI", 0, 18));
         jLabelInfoTotal.setForeground(new java.awt.Color(255, 255, 255));
         jLabelInfoTotal.setText("100000");
 
@@ -370,6 +367,7 @@ public class keranjang extends javax.swing.JDialog {
 
         java.awt.EventQueue.invokeLater(() -> {
             services.SqlServices sqlServices = new services.SqlServices();
+            // services.ProductServices productServices = new services.ProductServices(sqlServices); // ProductServices no longer exists
 
             java.util.List<CartItem> testCart = new java.util.ArrayList<>();
 
