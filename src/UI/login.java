@@ -1,31 +1,30 @@
 package UI;
-import controllers.LoginController; 
+
+import controllers.LoginController;
+import javax.swing.JOptionPane; // Still needed for JOptionPane
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 public class login extends javax.swing.JFrame {
 
-    private LoginController loginController; 
+    private LoginController loginController;
 
     public login() {
-        setTitle("Login");
-        setSize(800, 600);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-
         initComponents();
-        loginController = new LoginController(this); 
+        loginController = new LoginController(); // Initialize controller without passing the frame
 
         jTextFieldEmail.setText("masukkan username");
         jTextFieldEmail.setForeground(java.awt.Color.GRAY);
 
-        jTextFieldEmail.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
+        jTextFieldEmail.addFocusListener(new FocusAdapter() { // Use FocusAdapter for cleaner code
+            public void focusGained(FocusEvent evt) {
                 if (jTextFieldEmail.getText().equals("masukkan username")) {
                     jTextFieldEmail.setText("");
                     jTextFieldEmail.setForeground(java.awt.Color.BLACK);
                 }
             }
 
-            public void focusLost(java.awt.event.FocusEvent evt) {
+            public void focusLost(FocusEvent evt) {
                 if (jTextFieldEmail.getText().isEmpty()) {
                     jTextFieldEmail.setForeground(java.awt.Color.GRAY);
                     jTextFieldEmail.setText("masukkan username");
@@ -36,15 +35,15 @@ public class login extends javax.swing.JFrame {
         jTextFieldPassword.setText("masukkan password");
         jTextFieldPassword.setForeground(java.awt.Color.GRAY);
 
-        jTextFieldPassword.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
+        jTextFieldPassword.addFocusListener(new FocusAdapter() { // Use FocusAdapter
+            public void focusGained(FocusEvent evt) {
                 if (jTextFieldPassword.getText().equals("masukkan password")) {
                     jTextFieldPassword.setText("");
                     jTextFieldPassword.setForeground(java.awt.Color.BLACK);
                 }
             }
 
-            public void focusLost(java.awt.event.FocusEvent evt) {
+            public void focusLost(FocusEvent evt) {
                 if (jTextFieldPassword.getText().isEmpty()) {
                     jTextFieldPassword.setForeground(java.awt.Color.GRAY);
                     jTextFieldPassword.setText("masukkan password");
@@ -134,7 +133,25 @@ public class login extends javax.swing.JFrame {
         String email = jTextFieldEmail.getText().trim();
         String password = jTextFieldPassword.getText().trim();
 
-        loginController.authenticateUser(email, password);
+        // Perform basic UI validation first
+        if (email.equals("masukkan username") || email.isEmpty() || password.equals("masukkan password") || password.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Mohon isi semua field", "Peringatan", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int authStatus = loginController.authenticateUser(email, password);
+
+        if (authStatus == LoginController.AUTH_SUCCESS) {
+            JOptionPane.showMessageDialog(this, "Login berhasil!");
+            new dashboard2().setVisible(true);
+            this.dispose(); // Close the login frame
+        } else if (authStatus == LoginController.AUTH_INVALID_CREDENTIALS){
+            JOptionPane.showMessageDialog(this, "Email atau password salah", "Login Gagal", JOptionPane.ERROR_MESSAGE);
+        } else {
+            // This case would typically be handled by SqlServices directly with JOptionPane
+            // or a more robust error handling mechanism. For now, a generic error.
+            JOptionPane.showMessageDialog(this, "Terjadi kesalahan saat otentikasi.", "Login Gagal", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     public static void main(String args[]) {

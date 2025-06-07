@@ -1,43 +1,41 @@
 package controllers;
 
 import services.SqlServices;
-import UI.dashboard2; 
-import UI.login; 
-import javax.swing.JOptionPane;
-import javax.swing.JFrame; 
-import javax.swing.SwingUtilities;
-
+// Removed UI imports
+// import javax.swing.JOptionPane;
+// import javax.swing.JFrame; 
 
 public class LoginController {
-    private SqlServices sqlServices;
-    private JFrame loginFrame; 
+    private final SqlServices sqlServices;
+    // Removed reference to JFrame as it no longer directly interacts with it for display/dispose
+    // private JFrame loginFrame; 
 
-    public LoginController(JFrame loginFrame) {
+    public static final int AUTH_SUCCESS = 0;
+    public static final int AUTH_INVALID_CREDENTIALS = 1;
+    public static final int AUTH_DB_ERROR = 2;
+    // No need for "empty field" status here as UI handles initial check
+
+    public LoginController() { // Constructor simplified, no longer needs JFrame
         this.sqlServices = new SqlServices();
-        this.loginFrame = loginFrame;
     }
-    public LoginController() {
-        SwingUtilities.invokeLater(() -> {
-            login loginDialog = new login();
-            loginDialog.setVisible(true);
-        });
-    } 
 
-
-    public void authenticateUser(String email, String password) {
-        if (email.equals("masukkan username") || email.isEmpty() || password.equals("masukkan password") || password.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Mohon isi semua field", "Peringatan", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
+    // Returns an integer status indicating the authentication result
+    public int authenticateUser(String email, String password) {
+        // Basic input validation for empty fields/placeholders can remain in UI layer
+        // since it's about UI input state.
+        // If the UI sends valid (non-placeholder/non-empty) strings, proceed to DB check.
 
         boolean authenticated = sqlServices.cekUser(email, password);
 
         if (authenticated) {
-            JOptionPane.showMessageDialog(null, "Login berhasil!");
-            new dashboard2().setVisible(true);
-            loginFrame.dispose(); 
+            return AUTH_SUCCESS;
         } else {
-            JOptionPane.showMessageDialog(null, "Email atau password salah", "Login Gagal", JOptionPane.ERROR_MESSAGE);
+            // Check for database error or invalid credentials
+            // Assuming cekUser shows an error dialog itself for DB connection issues,
+            // otherwise, differentiate between "not found" and "db error" more explicitly.
+            // For now, if cekUser returns false, it's either invalid credentials or a DB error handled internally by cekUser.
+            // Let's assume false primarily means invalid credentials for clearer UI messaging here.
+            return AUTH_INVALID_CREDENTIALS;
         }
     }
 }

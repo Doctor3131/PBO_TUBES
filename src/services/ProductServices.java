@@ -8,12 +8,7 @@ public class ProductServices {
 
     private SqlServices sqlServices = new SqlServices();
 
-    public ProductServices(SqlServices sqlServices) {
-        this.sqlServices = sqlServices;
-    }
-
     public ProductServices() {
-
     }
 
     public List<Produk> getAllProducts() {

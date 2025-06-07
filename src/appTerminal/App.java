@@ -1,10 +1,13 @@
 package appTerminal;
 
-import controllers.LoginController;
-
+import UI.login;
+import javax.swing.SwingUtilities;
 
 public class App {
     public static void main(String[] args) {
-        LoginController loginController = new LoginController();
+        SwingUtilities.invokeLater(() -> {
+            login loginDialog = new login();
+            loginDialog.setVisible(true);
+        });
     }
 }
