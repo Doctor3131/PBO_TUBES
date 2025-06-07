@@ -1,40 +1,36 @@
 package controllers;
 
-import services.SqlServices; // Now directly importing SqlServices
+import services.SqlServices; 
 import java.util.List;
-
 import models.CartItem;
 import models.Transaksi;
 
 public class CartController {
-    private final SqlServices sqlServices; // Direct dependency on SqlServices
+    private final SqlServices sqlServices; 
     private final List<CartItem> cartItems;
 
-    // Constructor now takes SqlServices directly
-    public CartController(List<CartItem> cartItems, SqlServices sqlServices) {
+    public CartController(List<CartItem> cartItems) {
         this.cartItems = cartItems;
-        this.sqlServices = sqlServices;
+        this.sqlServices = new SqlServices();
     }
 
-    // Logic for clearing cart moved from ProductServices
     public boolean clearCart() {
         if (cartItems == null || cartItems.isEmpty()) {
             return true;
         }
-        boolean isSuccess = sqlServices.revertStockForCartItems(cartItems); // Directly call SqlServices
+        boolean isSuccess = sqlServices.revertStockForCartItems(cartItems); 
         if (isSuccess) {
-            cartItems.clear(); // Clear local list after successful operation
+            cartItems.clear(); 
         }
         return isSuccess;
     }
 
-    // Logic for performing checkout moved from ProductServices
     public Transaksi performCheckout() {
         if (cartItems == null || cartItems.isEmpty()) {
             return null;
         }
-        Transaksi newTransaction = new Transaksi(cartItems); // Instantiate Transaksi directly
-        cartItems.clear(); // Clear local list after successful checkout
+        Transaksi newTransaction = new Transaksi(cartItems); 
+        cartItems.clear(); 
         return newTransaction;
     }
 
@@ -42,10 +38,9 @@ public class CartController {
         return cartItems;
     }
 
-    // New method for handling exit, similar to cancelCart but for application exit
     public boolean handleExit() {
         if (cartItems != null && !cartItems.isEmpty()) {
-            boolean revertSuccess = sqlServices.revertStockForCartItems(cartItems); // Directly call SqlServices
+            boolean revertSuccess = sqlServices.revertStockForCartItems(cartItems);
             if (revertSuccess) {
                 cartItems.clear();
             }

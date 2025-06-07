@@ -1,7 +1,7 @@
 package UI;
 
 import controllers.LoginController;
-import javax.swing.JOptionPane; // Still needed for JOptionPane
+import javax.swing.JOptionPane;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
@@ -15,12 +15,12 @@ public class login extends javax.swing.JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         initComponents();
-        loginController = new LoginController(); // Initialize controller without passing the frame
+        loginController = new LoginController(); 
 
         jTextFieldEmail.setText("masukkan username");
         jTextFieldEmail.setForeground(java.awt.Color.GRAY);
 
-        jTextFieldEmail.addFocusListener(new FocusAdapter() { // Use FocusAdapter for cleaner code
+        jTextFieldEmail.addFocusListener(new FocusAdapter() { 
             public void focusGained(FocusEvent evt) {
                 if (jTextFieldEmail.getText().equals("masukkan username")) {
                     jTextFieldEmail.setText("");
@@ -39,7 +39,7 @@ public class login extends javax.swing.JFrame {
         jTextFieldPassword.setText("masukkan password");
         jTextFieldPassword.setForeground(java.awt.Color.GRAY);
 
-        jTextFieldPassword.addFocusListener(new FocusAdapter() { // Use FocusAdapter
+        jTextFieldPassword.addFocusListener(new FocusAdapter() { 
             public void focusGained(FocusEvent evt) {
                 if (jTextFieldPassword.getText().equals("masukkan password")) {
                     jTextFieldPassword.setText("");
@@ -137,7 +137,6 @@ public class login extends javax.swing.JFrame {
         String email = jTextFieldEmail.getText().trim();
         String password = jTextFieldPassword.getText().trim();
 
-        // Perform basic UI validation first
         if (email.equals("masukkan username") || email.isEmpty() || password.equals("masukkan password") || password.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Mohon isi semua field", "Peringatan", JOptionPane.WARNING_MESSAGE);
             return;
@@ -148,12 +147,10 @@ public class login extends javax.swing.JFrame {
         if (authStatus == LoginController.AUTH_SUCCESS) {
             JOptionPane.showMessageDialog(this, "Login berhasil!");
             new dashboard2().setVisible(true);
-            this.dispose(); // Close the login frame
+            this.dispose(); 
         } else if (authStatus == LoginController.AUTH_INVALID_CREDENTIALS){
             JOptionPane.showMessageDialog(this, "Email atau password salah", "Login Gagal", JOptionPane.ERROR_MESSAGE);
         } else {
-            // This case would typically be handled by SqlServices directly with JOptionPane
-            // or a more robust error handling mechanism. For now, a generic error.
             JOptionPane.showMessageDialog(this, "Terjadi kesalahan saat otentikasi.", "Login Gagal", JOptionPane.ERROR_MESSAGE);
         }
     }

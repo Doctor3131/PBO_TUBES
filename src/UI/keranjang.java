@@ -1,4 +1,3 @@
-// src/UI/keranjang.java
 package UI;
 
 import javax.swing.*;
@@ -14,7 +13,6 @@ public class keranjang extends javax.swing.JDialog {
     private JPanel panelIsi;
     private JLabel totalLabel;
 
-    // Constructor now takes CartController
     public keranjang(Frame parent, CartController cartController) {
         super(parent, "Keranjang Belanja", true);
         this.cartController = cartController;
@@ -367,8 +365,6 @@ public class keranjang extends javax.swing.JDialog {
 
         java.awt.EventQueue.invokeLater(() -> {
             services.SqlServices sqlServices = new services.SqlServices();
-            // services.ProductServices productServices = new services.ProductServices(sqlServices); // ProductServices no longer exists
-
             java.util.List<CartItem> testCart = new java.util.ArrayList<>();
 
             models.Produk sampleProduct1 = sqlServices.getProductById(1);

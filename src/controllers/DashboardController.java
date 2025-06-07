@@ -1,6 +1,6 @@
 package controllers;
 
-import services.SqlServices; // Now directly importing SqlServices
+import services.SqlServices; 
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -9,27 +9,25 @@ import models.CartItem;
 import models.Produk;
 
 public class DashboardController {
-    private final SqlServices sqlServices; // Direct dependency on SqlServices
+    private final SqlServices sqlServices; 
     private final List<CartItem> currentCart;
     private Consumer<String> addToCartStatusCallback;
 
     public DashboardController(List<CartItem> currentCart) {
-        this.sqlServices = new SqlServices(); // Initialize SqlServices directly
+        this.sqlServices = new SqlServices(); 
         this.currentCart = currentCart;
     }
 
-    // Setter for the callback
     public void setAddToCartStatusCallback(Consumer<String> callback) {
         this.addToCartStatusCallback = callback;
     }
 
     public List<Produk> getAllProducts() {
-        return sqlServices.getAllProducts(); // Directly call SqlServices
+        return sqlServices.getAllProducts(); 
     }
 
-    // New method to handle filtering
     public List<Produk> getFilteredProducts(String keyword) {
-        List<Produk> allProducts = sqlServices.getAllProducts(); // Directly call SqlServices
+        List<Produk> allProducts = sqlServices.getAllProducts(); 
         if (allProducts == null) {
             return null;
         }
@@ -42,9 +40,8 @@ public class DashboardController {
         return allProducts;
     }
 
-    // Logic for adding item to cart moved from ProductServices
     public void addItemToCart(int productId, int quantity) {
-        int status = 0; // 0: success, 1: product not found, 2: insufficient stock, 3: DB error, 4: invalid quantity
+        int status = 0; 
         String message = "";
 
         if (quantity <= 0) {
@@ -58,9 +55,9 @@ public class DashboardController {
             } else {
                 int stockUpdateStatus = sqlServices.reduceProductStock(productId, quantity);
                 if (stockUpdateStatus != 0) {
-                    if (stockUpdateStatus == 1) status = 1; // Product not found during stock update (shouldn't happen here)
-                    if (stockUpdateStatus == 2) status = 2; // Insufficient stock during stock update (race condition)
-                    if (stockUpdateStatus == -1) status = 3; // Database error
+                    if (stockUpdateStatus == 1) status = 1; 
+                    if (stockUpdateStatus == 2) status = 2; 
+                    if (stockUpdateStatus == -1) status = 3;
                 } else {
                     boolean itemFoundInCart = false;
                     for (CartItem item : currentCart) {
@@ -72,21 +69,19 @@ public class DashboardController {
                     }
 
                     if (!itemFoundInCart) {
-                        // Create a new Produk object for the cart based on the current state from DB
-                        // (Note: stock in cart item would be the quantity added, not DB stock)
                         Produk productForCart = new Produk(produkDariDB.getId(), produkDariDB.getSku(), produkDariDB.getNamaProduk(),
                                                            produkDariDB.getKategori(), produkDariDB.getDeskripsi(),
-                                                           produkDariDB.getHarga(), produkDariDB.getStok()); // Stok here is current DB stock, not what's in cart
+                                                           produkDariDB.getHarga(), produkDariDB.getStok()); 
                         currentCart.add(new CartItem(productForCart, quantity));
                     }
-                    status = 0; // Success
+                    status = 0; 
                 }
             }
         }
 
         switch (status) {
             case 0:
-                Produk addedProduct = sqlServices.getProductById(productId); // Re-fetch for updated product name
+                Produk addedProduct = sqlServices.getProductById(productId); 
                 message = "Produk " + (addedProduct != null ? addedProduct.getNamaProduk() : "dengan ID " + productId) + " berhasil ditambahkan.";
                 break;
             case 1:
