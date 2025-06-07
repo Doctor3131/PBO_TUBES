@@ -1,16 +1,15 @@
 package UI;
 
-
-import services.*;
-import javax.swing.JOptionPane;
+import controllers.LoginController; // Import the new controller
 
 public class login extends javax.swing.JFrame {
 
-    
+    private LoginController loginController; // Declare the controller
 
     public login() {
         initComponents();
-        
+        loginController = new LoginController(this); // Initialize the controller, passing the current frame
+
         jTextFieldEmail.setText("masukkan username");
         jTextFieldEmail.setForeground(java.awt.Color.GRAY);
 
@@ -29,7 +28,7 @@ public class login extends javax.swing.JFrame {
                 }
             }
         });
-        
+
         jTextFieldPassword.setText("masukkan password");
         jTextFieldPassword.setForeground(java.awt.Color.GRAY);
 
@@ -48,12 +47,11 @@ public class login extends javax.swing.JFrame {
                 }
             }
         });
-       
+
     }
 
-    
     private void initComponents() {
-
+        // ... (existing initComponents code remains the same)
         jLabelNamaSistem = new javax.swing.JLabel();
         jLabelEmail = new javax.swing.JLabel();
         jTextFieldEmail = new javax.swing.JTextField();
@@ -65,18 +63,18 @@ public class login extends javax.swing.JFrame {
         setBackground(new java.awt.Color(153, 255, 153));
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
-        jLabelNamaSistem.setFont(new java.awt.Font("ROG Fonts", 1, 18)); 
+        jLabelNamaSistem.setFont(new java.awt.Font("ROG Fonts", 1, 18));
         jLabelNamaSistem.setText("SIRIEL SHOP");
 
-        jLabelEmail.setFont(new java.awt.Font("Segoe UI", 0, 14)); 
+        jLabelEmail.setFont(new java.awt.Font("Segoe UI", 0, 14));
         jLabelEmail.setText("Email");
 
         jTextFieldEmail.setToolTipText("");
 
-        jLabelPassword.setFont(new java.awt.Font("Segoe UI", 0, 14)); 
+        jLabelPassword.setFont(new java.awt.Font("Segoe UI", 0, 14));
         jLabelPassword.setText("Password");
 
-        jButtonLogin.setFont(new java.awt.Font("Segoe UI", 1, 14)); 
+        jButtonLogin.setFont(new java.awt.Font("Segoe UI", 1, 14));
         jButtonLogin.setText("LOGIN");
         jButtonLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -128,25 +126,12 @@ public class login extends javax.swing.JFrame {
         pack();
     }
 
+
     private void jButtonLoginActionPerformed(java.awt.event.ActionEvent evt) {
         String email = jTextFieldEmail.getText().trim();
         String password = jTextFieldPassword.getText().trim();
 
-        if (email.equals("masukkan username") || email.isEmpty() || password.equals("masukkan password") || password.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Mohon isi semua field", "Peringatan", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        SqlServices service = new SqlServices();
-        boolean acc = service.cekUser(email, password);
-
-        if (acc) {
-            JOptionPane.showMessageDialog(null, "Login berhasil!");
-            new dashboard2().setVisible(true);
-            dispose(); 
-        } else {
-            JOptionPane.showMessageDialog(null, "Email atau password salah", "Login Gagal", JOptionPane.ERROR_MESSAGE);
-        }
+        loginController.authenticateUser(email, password);
     }
 
     public static void main(String args[]) {

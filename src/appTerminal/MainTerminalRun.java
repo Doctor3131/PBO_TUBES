@@ -3,9 +3,10 @@ package appTerminal;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Scanner;
-import model.Produk;
-import model.CartItem;
-import model.Transaksi;
+
+import models.CartItem;
+import models.Produk;
+import models.Transaksi;
 import services.ProductServices;
 import services.SqlServices;
 

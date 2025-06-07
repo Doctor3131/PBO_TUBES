@@ -1,3 +1,4 @@
+// src/UI/dashboard2.java
 package UI;
 
 import javax.swing.*;
@@ -5,21 +6,28 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import model.CartItem;
-import model.Produk;
-import services.ProductServices;
-import services.SqlServices;
+
+import services.ProductServices; // Still needed for CartController and ProductServices constructor within DashboardController
+import controllers.DashboardController; // Import the new controller
+import models.CartItem;
+import models.Produk;
+import controllers.CartController; // Import CartController
 
 public class dashboard2 extends javax.swing.JFrame {
 
     private JPanel panelProduk;
     private JScrollPane scrollPane;
     private final List<CartItem> keranjang = new ArrayList<>();
-    private final ProductServices productServices;
+    private final DashboardController dashboardController; // Use the controller
     private JTextField searchField;
+    private ProductServices productServices; // Keep a reference for CartController initialization
 
     public dashboard2() {
-        this.productServices = new ProductServices(new SqlServices());
+        this.productServices = new ProductServices(new services.SqlServices()); // Initialize here to pass to CartController
+        this.dashboardController = new DashboardController(keranjang); // Pass the cart to the dashboard controller
+        // Set the callback for add to cart status
+        dashboardController.setAddToCartStatusCallback(this::handleAddToCartStatus);
+
 
         setTitle("Dashboard Produk");
         setSize(800, 600);
@@ -52,10 +60,12 @@ public class dashboard2 extends javax.swing.JFrame {
         btnCari.addActionListener(e -> tampilkanProduk(searchField.getText()));
 
         btnKeranjang.addActionListener(e -> {
-            keranjang cartDialog = new keranjang(this, keranjang, productServices);
-            cartDialog.setVisible(true); 
+            // Pass the cart items and productServices to the CartController
+            CartController cartController = new CartController(keranjang, productServices);
+            keranjang cartDialog = new keranjang(this, cartController); // Pass the controller
+            cartDialog.setVisible(true);
 
-            tampilkanProduk(searchField.getText());
+            tampilkanProduk(searchField.getText()); // Refresh product list after cart interaction
         });
 
         tombolPanel.add(new JLabel("Cari Produk:"));
@@ -76,7 +86,8 @@ public class dashboard2 extends javax.swing.JFrame {
 
     private void tampilkanProduk(String keyword) {
         panelProduk.removeAll();
-        List<Produk> produkList = productServices.getAllProducts();
+        // Use the controller to get products
+        List<Produk> produkList = dashboardController.getAllProducts();
 
         if (produkList == null) {
             JOptionPane.showMessageDialog(this, "Gagal memuat produk dari database.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -103,7 +114,7 @@ public class dashboard2 extends javax.swing.JFrame {
 
             JLabel harga = new JLabel(String.format("Rp%,.2f", p.getHarga()));
             harga.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-            
+
             JLabel stok = new JLabel("Stok: " + p.getStok());
             stok.setFont(new Font("Segoe UI", Font.ITALIC, 12));
 
@@ -116,9 +127,10 @@ public class dashboard2 extends javax.swing.JFrame {
                 if (quantityStr != null && !quantityStr.isEmpty()) {
                     try {
                         int quantity = Integer.parseInt(quantityStr);
-                        int status = productServices.addItemToCart(keranjang, p.getId(), quantity);
-                        handleAddToCartStatus(status, p.getNamaProduk());
-                        tampilkanProduk(searchField.getText());
+                        // Delegate to controller
+                        dashboardController.addItemToCart(p.getId(), quantity);
+                        // The callback handleAddToCartStatus will be called by the controller
+                        tampilkanProduk(searchField.getText()); // Refresh view after adding
                     } catch (NumberFormatException ex) {
                         JOptionPane.showMessageDialog(this, "Jumlah harus berupa angka.", "Input Tidak Valid", JOptionPane.ERROR_MESSAGE);
                     }
@@ -145,17 +157,23 @@ public class dashboard2 extends javax.swing.JFrame {
         panelProduk.revalidate();
         panelProduk.repaint();
     }
-    
-    private void handleAddToCartStatus(int status, String productName) {
+
+    // This method remains in the View as it's purely for UI feedback
+    private void handleAddToCartStatus(int status) {
+        String productName = ""; // In a real app, you might pass the product name back from the controller
+        // or re-fetch product details if needed. For simplicity, we'll keep it generic here.
+        // For accurate product name feedback, DashboardController.addItemToCart
+        // could return the product name along with the status.
+
         switch (status) {
             case 0:
-                JOptionPane.showMessageDialog(this, "Produk '" + productName + "' berhasil ditambahkan.", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Produk berhasil ditambahkan.", "Sukses", JOptionPane.INFORMATION_MESSAGE);
                 break;
             case 1:
                 JOptionPane.showMessageDialog(this, "Error: Produk tidak ditemukan.", "Error", JOptionPane.ERROR_MESSAGE);
                 break;
             case 2:
-                JOptionPane.showMessageDialog(this, "Error: Stok tidak mencukupi untuk '" + productName + "'.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Error: Stok tidak mencukupi.", "Error", JOptionPane.ERROR_MESSAGE);
                 break;
             case 3:
                 JOptionPane.showMessageDialog(this, "Error: Terjadi kesalahan pada database.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -168,8 +186,6 @@ public class dashboard2 extends javax.swing.JFrame {
                 break;
         }
     }
-
-
 
 
     /**
@@ -269,11 +285,11 @@ public class dashboard2 extends javax.swing.JFrame {
         jPanelProduk.setBackground(new java.awt.Color(255, 255, 255));
 
         jButtonTambah.setBackground(new java.awt.Color(51, 102, 255));
-        jButtonTambah.setFont(new java.awt.Font("Segoe UI", 0, 8)); 
+        jButtonTambah.setFont(new java.awt.Font("Segoe UI", 0, 8));
         jButtonTambah.setForeground(new java.awt.Color(255, 255, 255));
         jButtonTambah.setText(" tambah");
 
-        jLabelNamaProduk.setFont(new java.awt.Font("Segoe UI", 1, 18)); 
+        jLabelNamaProduk.setFont(new java.awt.Font("Segoe UI", 1, 18));
         jLabelNamaProduk.setText("Risol Mayo");
 
         jLabelHarga.setText("Harga : Rp.");

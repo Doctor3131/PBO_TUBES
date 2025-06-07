@@ -12,9 +12,11 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import model.Produk;
-import model.CartItem;
+
 import javax.swing.JOptionPane;
+
+import models.CartItem;
+import models.Produk;
 
 public class SqlServices {
 
@@ -40,6 +42,7 @@ public class SqlServices {
             if (url == null || user == null || password == null) {
                 throw new SQLException("Database configuration (URL, user, password) not found in properties file.");
             }
+            System.out.println("Koneksi berhasil");
             return DriverManager.getConnection(url, user, password);
         } catch (ClassNotFoundException e) {
              throw new SQLException("Gagal memuat driver JDBC: " + e.getMessage(), e);

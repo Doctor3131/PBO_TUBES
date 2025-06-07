@@ -1,17 +1,19 @@
 package services;
 
 import java.util.List;
-import model.Produk;
-import model.CartItem;
-import model.Transaksi;
-
-
+import models.CartItem;
+import models.Produk;
+import models.Transaksi;
 public class ProductServices {
 
-    private SqlServices sqlServices;
+    private SqlServices sqlServices = new SqlServices();
 
     public ProductServices(SqlServices sqlServices) {
         this.sqlServices = sqlServices;
+    }
+
+    public ProductServices() {
+
     }
 
     public List<Produk> getAllProducts() {

@@ -1,23 +1,25 @@
+// src/UI/keranjang.java
 package UI;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
-import model.CartItem;
-import model.Produk;
-import model.Transaksi;
-import services.ProductServices;
+
+import services.ProductServices; 
+import controllers.CartController; // Import the new controller
+import models.CartItem;
+import models.Produk;
+import models.Transaksi;
 
 public class keranjang extends javax.swing.JDialog {
-    private final List<CartItem> cartItems;
-    private final ProductServices productServices;
+    private final CartController cartController; // Use the controller
     private JPanel panelIsi;
     private JLabel totalLabel;
 
-    public keranjang(Frame parent, List<CartItem> cartItems, ProductServices productServices) {
-        super(parent, "Keranjang Belanja", true); 
-        this.cartItems = cartItems;
-        this.productServices = productServices;
+    // Constructor now takes CartController
+    public keranjang(Frame parent, CartController cartController) {
+        super(parent, "Keranjang Belanja", true);
+        this.cartController = cartController;
 
         setTitle("Keranjang Belanja");
         setSize(500, 400);
@@ -75,6 +77,7 @@ public class keranjang extends javax.swing.JDialog {
     private void tampilkanIsiKeranjang() {
         panelIsi.removeAll();
         double total = 0;
+        List<CartItem> cartItems = cartController.getCartItems(); // Get cart items from controller
 
         if (cartItems.isEmpty()) {
             JLabel emptyLabel = new JLabel("Keranjang Anda kosong.");
@@ -101,7 +104,7 @@ public class keranjang extends javax.swing.JDialog {
                 String detail = String.format("%d pcs @ Rp%,.2f", item.getQuantity(), p.getHarga());
                 JLabel harga = new JLabel(detail);
                 harga.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-                
+
                 JPanel infoPanel = new JPanel();
                 infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
                 infoPanel.setOpaque(false);
@@ -123,21 +126,22 @@ public class keranjang extends javax.swing.JDialog {
         panelIsi.revalidate();
         panelIsi.repaint();
     }
-    
+
     private void clearCart() {
+        List<CartItem> cartItems = cartController.getCartItems(); // Get cart items for check
         if (cartItems.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Keranjang sudah kosong.", "Info", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
 
-        int confirm = JOptionPane.showConfirmDialog(this, 
-                "Anda yakin ingin mengosongkan keranjang? Stok akan dikembalikan.", 
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "Anda yakin ingin mengosongkan keranjang? Stok akan dikembalikan.",
                 "Konfirmasi", JOptionPane.YES_NO_OPTION);
 
         if (confirm == JOptionPane.YES_OPTION) {
-            boolean isSuccess = productServices.cancelCart(cartItems);
+            boolean isSuccess = cartController.clearCart(); // Delegate to controller
             if (isSuccess) {
-                cartItems.clear();
+                cartItems.clear(); // Clear local list after successful operation
                 JOptionPane.showMessageDialog(this, "Keranjang berhasil dikosongkan.", "Sukses", JOptionPane.INFORMATION_MESSAGE);
                 this.dispose(); // Close the dialog
             } else {
@@ -147,28 +151,28 @@ public class keranjang extends javax.swing.JDialog {
     }
 
     private void performCheckout() {
+        List<CartItem> cartItems = cartController.getCartItems(); // Get cart items for check
         if (cartItems.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Keranjang kosong, tidak bisa checkout.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        Transaksi transaksiBaru = productServices.processCheckout(cartItems);
+        Transaksi transaksiBaru = cartController.performCheckout(); // Delegate to controller
         if (transaksiBaru != null) {
-            cartItems.clear();
-            
+            cartItems.clear(); // Clear local list after successful checkout
+
             JTextArea transactionDetails = new JTextArea(transaksiBaru.toString());
             transactionDetails.setEditable(false);
             transactionDetails.setBackground(this.getBackground());
             JScrollPane scrollPane = new JScrollPane(transactionDetails);
             scrollPane.setPreferredSize(new Dimension(400, 300));
-            
+
             JOptionPane.showMessageDialog(this, scrollPane, "Checkout Berhasil!", JOptionPane.INFORMATION_MESSAGE);
             this.dispose();
         } else {
             JOptionPane.showMessageDialog(this, "Gagal melakukan checkout.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-
 
 
     /**
@@ -376,19 +380,18 @@ public class keranjang extends javax.swing.JDialog {
         java.awt.EventQueue.invokeLater(() -> {
             services.SqlServices sqlServices = new services.SqlServices();
             services.ProductServices productServices = new services.ProductServices(sqlServices);
-            
-            java.util.List<model.CartItem> testCart = new java.util.ArrayList<>();
 
-            model.Produk sampleProduct1 = sqlServices.getProductById(1);
+            java.util.List<CartItem> testCart = new java.util.ArrayList<>();
+
+            models.Produk sampleProduct1 = sqlServices.getProductById(1);
             if (sampleProduct1 != null) {
-                testCart.add(new model.CartItem(sampleProduct1, 2));
+                testCart.add(new CartItem(sampleProduct1, 2));
             }
 
-            model.Produk sampleProduct2 = sqlServices.getProductById(3);
+            models.Produk sampleProduct2 = sqlServices.getProductById(3);
             if (sampleProduct2 != null) {
-                testCart.add(new model.CartItem(sampleProduct2, 1));
+                testCart.add(new CartItem(sampleProduct2, 1));
             }
-
         });
     }
 
