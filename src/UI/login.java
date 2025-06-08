@@ -12,7 +12,7 @@ public class Login extends javax.swing.JFrame {
     public Login(Frame parent) {
         setTitle("Dashboard Produk");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLocationRelativeTo(parent);
+        setLocationRelativeTo(null);
         initComponents();
         loginController = new LoginController(); 
 
