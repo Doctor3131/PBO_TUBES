@@ -17,12 +17,11 @@ public class Dashboard extends javax.swing.JFrame {
     private final DashboardController dashboardController;
     private JTextField searchField;
     private KeranjangController keranjangController;
-    private final Keranjang keranjang;
 
     public Dashboard() {
         this.dashboardController = new DashboardController(listItem);
+        // Initialize the KeranjangController with the shared list of cart items
         this.keranjangController = new KeranjangController(listItem);
-        this.keranjang = new Keranjang(null, null);
         dashboardController.setAddToCartStatusCallback(this::handleAddToCartStatus);
 
         setTitle("Dashboard Produk");
@@ -55,9 +54,10 @@ public class Dashboard extends javax.swing.JFrame {
 
         btnCari.addActionListener(e -> tampilkanProduk(searchField.getText()));
 
+        // When the cart button is clicked, create and show a new Keranjang dialog
         btnKeranjang.addActionListener(e -> {
             new Keranjang(this, keranjangController).setVisible(true);
-
+            // Refresh the product list in case stock changed
             tampilkanProduk(searchField.getText());
         });
 

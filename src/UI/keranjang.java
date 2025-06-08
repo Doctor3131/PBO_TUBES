@@ -167,8 +167,10 @@ public class Keranjang extends javax.swing.JDialog {
         }
     }
 
+    /**
+     * A test entry point for this dialog.
+     */
     public static void main(String args[]) {
-
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -180,10 +182,12 @@ public class Keranjang extends javax.swing.JDialog {
             java.util.logging.Logger.getLogger(Keranjang.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
 
+        // Create mock data for testing
         java.awt.EventQueue.invokeLater(() -> {
             services.SqlServices sqlServices = new services.SqlServices();
             java.util.List<CartItem> testCart = new java.util.ArrayList<>();
 
+            // Add some sample products to the test cart
             models.Produk sampleProduct1 = sqlServices.getProductById(1);
             if (sampleProduct1 != null) {
                 testCart.add(new CartItem(sampleProduct1, 2));
@@ -193,7 +197,12 @@ public class Keranjang extends javax.swing.JDialog {
             if (sampleProduct2 != null) {
                 testCart.add(new CartItem(sampleProduct2, 1));
             }
+            
+            // Create a controller and the dialog for testing
+            KeranjangController testController = new KeranjangController(testCart);
+            Keranjang dialog = new Keranjang(null, testController);
+            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            dialog.setVisible(true);
         });
     }
-
 }
