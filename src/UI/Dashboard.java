@@ -5,7 +5,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import controllers.DashboardController;
-import controllers.CartController;
+import controllers.KeranjangController;
 import models.CartItem;
 import models.Produk;
 
@@ -13,14 +13,16 @@ public class Dashboard extends javax.swing.JFrame {
 
     private JPanel panelProduk;
     private JScrollPane scrollPane;
-    private final List<CartItem> keranjang = new ArrayList<>();
+    private final List<CartItem> listItem = new ArrayList<>();
     private final DashboardController dashboardController;
     private JTextField searchField;
-    private CartController cartController;
+    private KeranjangController keranjangController;
+    private final Keranjang keranjang;
 
     public Dashboard() {
-        this.dashboardController = new DashboardController(keranjang);
-        this.cartController = new CartController(keranjang);
+        this.dashboardController = new DashboardController(listItem);
+        this.keranjangController = new KeranjangController(listItem);
+        this.keranjang = new Keranjang(null, null);
         dashboardController.setAddToCartStatusCallback(this::handleAddToCartStatus);
 
         setTitle("Dashboard Produk");
@@ -54,8 +56,7 @@ public class Dashboard extends javax.swing.JFrame {
         btnCari.addActionListener(e -> tampilkanProduk(searchField.getText()));
 
         btnKeranjang.addActionListener(e -> {
-            Keranjang cartDialog = new Keranjang(this, cartController);
-            cartDialog.setVisible(true);
+            new Keranjang(this, keranjangController).setVisible(true);
 
             tampilkanProduk(searchField.getText());
         });

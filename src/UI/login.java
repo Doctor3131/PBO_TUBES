@@ -11,7 +11,6 @@ public class Login extends javax.swing.JFrame {
 
     public Login(Frame parent) {
         setTitle("Dashboard Produk");
-        // setSize(800, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setLocationRelativeTo(parent);
         initComponents();
@@ -19,7 +18,6 @@ public class Login extends javax.swing.JFrame {
 
         jTextFieldEmail.setText("masukkan username");
         jTextFieldEmail.setForeground(java.awt.Color.GRAY);
-
         jTextFieldEmail.addFocusListener(new FocusAdapter() { 
             public void focusGained(FocusEvent evt) {
                 if (jTextFieldEmail.getText().equals("masukkan username")) {
@@ -27,7 +25,6 @@ public class Login extends javax.swing.JFrame {
                     jTextFieldEmail.setForeground(java.awt.Color.BLACK);
                 }
             }
-
             public void focusLost(FocusEvent evt) {
                 if (jTextFieldEmail.getText().isEmpty()) {
                     jTextFieldEmail.setForeground(java.awt.Color.GRAY);
@@ -38,7 +35,6 @@ public class Login extends javax.swing.JFrame {
 
         jTextFieldPassword.setText("masukkan password");
         jTextFieldPassword.setForeground(java.awt.Color.GRAY);
-
         jTextFieldPassword.addFocusListener(new FocusAdapter() { 
             public void focusGained(FocusEvent evt) {
                 if (jTextFieldPassword.getText().equals("masukkan password")) {
@@ -46,7 +42,6 @@ public class Login extends javax.swing.JFrame {
                     jTextFieldPassword.setForeground(java.awt.Color.BLACK);
                 }
             }
-
             public void focusLost(FocusEvent evt) {
                 if (jTextFieldPassword.getText().isEmpty()) {
                     jTextFieldPassword.setForeground(java.awt.Color.GRAY);
@@ -54,7 +49,6 @@ public class Login extends javax.swing.JFrame {
                 }
             }
         });
-
     }
 
     private void initComponents() {
@@ -144,6 +138,7 @@ public class Login extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(this, "Login berhasil!");
                 new Dashboard().setVisible(true);
                 this.dispose();
+                break;
             case LoginController.AUTH_BLANK:
                 JOptionPane.showMessageDialog(this, "Mohon isi semua field", "Peringatan", JOptionPane.WARNING_MESSAGE);
                 break;
@@ -153,10 +148,9 @@ public class Login extends javax.swing.JFrame {
             default:
                 JOptionPane.showMessageDialog(this, "Terjadi kesalahan saat otentikasi.", "Login Gagal", JOptionPane.ERROR_MESSAGE);
                 break;
-                
         }
     }
-
+    
     public static void main(String args[]) {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -179,7 +173,6 @@ public class Login extends javax.swing.JFrame {
                 new Login(null).setVisible(true);
             }
         });
-    
     }
 
     private javax.swing.JButton jButtonLogin;

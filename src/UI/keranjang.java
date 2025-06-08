@@ -3,19 +3,19 @@ package UI;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
-import controllers.CartController;
+import controllers.KeranjangController;
 import models.CartItem;
 import models.Produk;
 import models.Transaksi;
 
 public class Keranjang extends javax.swing.JDialog {
-    private final CartController cartController;
+    private final KeranjangController keranjangController;
     private JPanel panelIsi;
     private JLabel totalLabel;
 
-    public Keranjang(Frame parent, CartController cartController) {
+    public Keranjang(Frame parent, KeranjangController keranjangController) {
         super(parent, "Keranjang Belanja", true);
-        this.cartController = cartController;
+        this.keranjangController = keranjangController;
 
         setTitle("Keranjang Belanja");
         setSize(500, 400);
@@ -73,7 +73,7 @@ public class Keranjang extends javax.swing.JDialog {
     private void tampilkanIsiKeranjang() {
         panelIsi.removeAll();
         double total = 0;
-        List<CartItem> cartItems = cartController.getCartItems();
+        List<CartItem> cartItems = keranjangController.getCartItems();
 
         if (cartItems.isEmpty()) {
             JLabel emptyLabel = new JLabel("Keranjang Anda kosong.");
@@ -124,7 +124,7 @@ public class Keranjang extends javax.swing.JDialog {
     }
 
     private void clearCart() {
-        List<CartItem> cartItems = cartController.getCartItems();
+        List<CartItem> cartItems = keranjangController.getCartItems();
         if (cartItems.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Keranjang sudah kosong.", "Info", JOptionPane.INFORMATION_MESSAGE);
             return;
@@ -135,7 +135,7 @@ public class Keranjang extends javax.swing.JDialog {
                 "Konfirmasi", JOptionPane.YES_NO_OPTION);
 
         if (confirm == JOptionPane.YES_OPTION) {
-            boolean isSuccess = cartController.clearCart();
+            boolean isSuccess = keranjangController.clearCart();
             if (isSuccess) {
                 JOptionPane.showMessageDialog(this, "Keranjang berhasil dikosongkan.", "Sukses", JOptionPane.INFORMATION_MESSAGE);
                 this.dispose();
@@ -146,13 +146,13 @@ public class Keranjang extends javax.swing.JDialog {
     }
 
     private void performCheckout() {
-        List<CartItem> cartItems = cartController.getCartItems();
+        List<CartItem> cartItems = keranjangController.getCartItems();
         if (cartItems.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Keranjang kosong, tidak bisa checkout.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
-        Transaksi transaksiBaru = cartController.performCheckout();
+        Transaksi transaksiBaru = keranjangController.performCheckout();
         if (transaksiBaru != null) {
             JTextArea transactionDetails = new JTextArea(transaksiBaru.toString());
             transactionDetails.setEditable(false);
