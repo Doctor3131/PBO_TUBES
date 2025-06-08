@@ -180,18 +180,13 @@ public class Keranjang extends javax.swing.JDialog {
         }
 
         java.awt.EventQueue.invokeLater(() -> {
-            services.SqlServices sqlServices = new services.SqlServices();
             java.util.List<CartItem> testCart = new java.util.ArrayList<>();
 
-            models.Produk sampleProduct1 = sqlServices.getProductById(1);
-            if (sampleProduct1 != null) {
-                testCart.add(new CartItem(sampleProduct1, 2));
-            }
+            models.Produk sampleProduct1 = new Produk(1, "SKU001", "Laptop Gaming", "Elektronik", "Laptop super cepat", 15000000.00, 10);
+            testCart.add(new CartItem(sampleProduct1, 2));
 
-            models.Produk sampleProduct2 = sqlServices.getProductById(3);
-            if (sampleProduct2 != null) {
-                testCart.add(new CartItem(sampleProduct2, 1));
-            }
+            models.Produk sampleProduct2 = new Produk(3, "SKU003", "Mouse Wireless", "Aksesoris", "Mouse tanpa kabel", 250000.00, 50);
+            testCart.add(new CartItem(sampleProduct2, 1));
             
             KeranjangController testController = new KeranjangController(testCart);
             Keranjang dialog = new Keranjang(null, testController);
