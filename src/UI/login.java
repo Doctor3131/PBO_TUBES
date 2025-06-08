@@ -2,18 +2,18 @@ package UI;
 
 import controllers.LoginController;
 import javax.swing.JOptionPane; 
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
+import java.awt.*;
+import java.awt.event.*;
 
 public class Login extends javax.swing.JFrame {
 
     private LoginController loginController;
 
-    public Login() {
+    public Login(Frame parent) {
         setTitle("Dashboard Produk");
-        setSize(800, 600);
+        // setSize(800, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+        setLocationRelativeTo(parent);
         initComponents();
         loginController = new LoginController(); 
 
@@ -174,7 +174,7 @@ public class Login extends javax.swing.JFrame {
         }
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Login().setVisible(true);
+                new Login(null).setVisible(true);
             }
         });
     

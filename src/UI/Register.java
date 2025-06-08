@@ -5,6 +5,8 @@ import controllers.RegisterController;
 
 public class Register extends javax.swing.JFrame {
     private RegisterController registerController;
+    private Login login; 
+
 
     public Register() {
         setSize(800, 600);
@@ -12,7 +14,8 @@ public class Register extends javax.swing.JFrame {
         setLocationRelativeTo(null);
         initComponents();
         this.registerController  = new RegisterController();
-        
+        this.login = new Login(this);
+
         initComponents();
         
         jTextFieldEmail.setText("masukkan username");
@@ -93,7 +96,7 @@ public class Register extends javax.swing.JFrame {
         setBackground(new java.awt.Color(255, 255, 255));
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
-        jLabelEmail.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabelEmail.setFont(new java.awt.Font("Segoe UI", 0, 14)); 
         jLabelEmail.setText("Email");
 
         jTextFieldEmail.setToolTipText("");
@@ -103,11 +106,11 @@ public class Register extends javax.swing.JFrame {
             }
         });
 
-        jLabelPassword.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabelPassword.setFont(new java.awt.Font("Segoe UI", 0, 14)); 
         jLabelPassword.setText("Password");
 
         jButtonRegister.setBackground(new java.awt.Color(130, 207, 255));
-        jButtonRegister.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jButtonRegister.setFont(new java.awt.Font("Segoe UI", 1, 14)); 
         jButtonRegister.setForeground(new java.awt.Color(255, 255, 255));
         jButtonRegister.setText("REGISTER");
         jButtonRegister.addActionListener(new java.awt.event.ActionListener() {
@@ -127,7 +130,7 @@ public class Register extends javax.swing.JFrame {
             }
         });
 
-        jLabelAlamat.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabelAlamat.setFont(new java.awt.Font("Segoe UI", 0, 14)); 
         jLabelAlamat.setText("Alamat");
 
         jTextFieldAlamat.addActionListener(new java.awt.event.ActionListener() {
@@ -140,7 +143,7 @@ public class Register extends javax.swing.JFrame {
         jPanel3.setPreferredSize(new java.awt.Dimension(300, 61));
 
         jLabelNamaSistem.setBackground(new java.awt.Color(255, 255, 255));
-        jLabelNamaSistem.setFont(new java.awt.Font("ROG Fonts", 1, 18)); // NOI18N
+        jLabelNamaSistem.setFont(new java.awt.Font("ROG Fonts", 1, 18));
         jLabelNamaSistem.setForeground(new java.awt.Color(255, 255, 255));
         jLabelNamaSistem.setText("SIRIEL SHOP");
 
@@ -219,20 +222,20 @@ public class Register extends javax.swing.JFrame {
         );
 
         pack();
-    }// </editor-fold>                        
+    }
 
-    private void jButtonLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLoginActionPerformed
-        new Login().setVisible(true); // buka frame Login
-        dispose(); // tutup frame saat ini
-    }//GEN-LAST:event_jButtonLoginActionPerformed
+    private void jButtonLoginActionPerformed(java.awt.event.ActionEvent evt) {
+        login.setVisible(rootPaneCheckingEnabled);
+        dispose(); 
+    }
 
-    private void jTextFieldAlamatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldAlamatActionPerformed
-    }//GEN-LAST:event_jTextFieldAlamatActionPerformed
+    private void jTextFieldAlamatActionPerformed(java.awt.event.ActionEvent evt) {
+    }
 
-    private void jTextFieldEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldEmailActionPerformed
-    }//GEN-LAST:event_jTextFieldEmailActionPerformed
+    private void jTextFieldEmailActionPerformed(java.awt.event.ActionEvent evt) {
+    }
 
-    private void jButtonRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRegisterActionPerformed
+    private void jButtonRegisterActionPerformed(java.awt.event.ActionEvent evt) {
         String email = jTextFieldEmail.getText();
         String password = jTextFieldPassword.getText();
         String alamat = jTextFieldAlamat.getText();
@@ -255,23 +258,15 @@ public class Register extends javax.swing.JFrame {
         } 
         else {
             JOptionPane.showMessageDialog(null, "Registrasi berhasil! SIlahkan Login!");
-            this.dispose(); // Tutup jendela registrasi
-            new Login().setVisible(true);
+            this.dispose(); 
+            new Login(this).setVisible(true);
             jTextFieldEmail.setText("");
             jTextFieldPassword.setText("");
             jTextFieldAlamat.setText("");
         }
-    }//GEN-LAST:event_jButtonRegisterActionPerformed
+    }
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -288,24 +283,6 @@ public class Register extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Register.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new Register().setVisible(true);
@@ -313,7 +290,6 @@ public class Register extends javax.swing.JFrame {
         });
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonLogin;
     private javax.swing.JButton jButtonRegister;
     private javax.swing.JLabel jLabelAlamat;
@@ -325,5 +301,4 @@ public class Register extends javax.swing.JFrame {
     private javax.swing.JTextField jTextFieldAlamat;
     private javax.swing.JTextField jTextFieldEmail;
     private javax.swing.JTextField jTextFieldPassword;
-    // End of variables declaration//GEN-END:variables
 }

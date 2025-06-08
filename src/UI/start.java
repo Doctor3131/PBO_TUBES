@@ -1,5 +1,12 @@
 package UI;
 
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+
 public class Start extends javax.swing.JFrame {
 
     public Start() {
@@ -11,128 +18,70 @@ public class Start extends javax.swing.JFrame {
 
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jPanel2 = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        javax.swing.JPanel mainPanel = new javax.swing.JPanel();
+        javax.swing.JLabel logoLabel1 = new javax.swing.JLabel();
+        javax.swing.JLabel logoLabel2 = new javax.swing.JLabel();
+        javax.swing.JPanel sloganPanel = new javax.swing.JPanel();
+        javax.swing.JLabel sloganLabel1 = new javax.swing.JLabel();
+        javax.swing.JLabel sloganLabel2 = new javax.swing.JLabel();
+        javax.swing.JButton shoppingButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(130, 207, 255));
+        mainPanel.setBackground(new java.awt.Color(130, 207, 255));
+        mainPanel.setLayout(new GridBagLayout());
+        setContentPane(mainPanel); 
 
-        jLabel1.setFont(new java.awt.Font("ROG Fonts", 0, 60)); 
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("siriel");
+        GridBagConstraints gbc = new GridBagConstraints();
 
-        jLabel2.setFont(new java.awt.Font("ROG Fonts", 0, 36)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("shop");
+        javax.swing.JPanel logoPanel = new javax.swing.JPanel();
+        logoPanel.setOpaque(false); 
+        logoLabel1.setFont(new Font("ROG Fonts", 0, 100));
+        logoLabel1.setForeground(Color.WHITE);
+        logoLabel1.setText("siriel");
+        logoLabel2.setFont(new Font("ROG Fonts", 0, 86));
+        logoLabel2.setForeground(Color.WHITE);
+        logoLabel2.setText("shop");
+        logoPanel.add(logoLabel1);
+        logoPanel.add(logoLabel2);
+        
+        gbc.gridy = 0;
+        gbc.insets = new Insets(0, 0, 45, 0); 
+        mainPanel.add(logoPanel, gbc);
+        
+        sloganPanel.setBackground(Color.WHITE);
+        sloganPanel.setLayout(new GridBagLayout()); 
+        sloganLabel1.setFont(new Font("Segoe UI", 1, 18));
+        sloganLabel1.setText("Belanja onglen gak pake ribet");
+        sloganLabel2.setFont(new Font("Segoe UI", 1, 18));
+        sloganLabel2.setText("tinggal klak klik klak klik beresss!");
+        
+        GridBagConstraints gbcSlogan = new GridBagConstraints();
+        gbcSlogan.anchor = GridBagConstraints.WEST;
+        gbcSlogan.insets = new Insets(10, 15, 5, 15);
+        gbcSlogan.gridy = 0;
+        sloganPanel.add(sloganLabel1, gbcSlogan);
+        gbcSlogan.insets = new Insets(0, 15, 10, 15);
+        gbcSlogan.gridy = 1;
+        sloganPanel.add(sloganLabel2, gbcSlogan);
 
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        gbc.gridy = 1;
+        mainPanel.add(sloganPanel, gbc);
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel3.setText("Belanja onglen gak pake ribet");
-
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel4.setText("tinggal klak klik klak klik beresss!");
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(61, 61, 61)
-                        .addComponent(jLabel4))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(76, 76, 76)
-                        .addComponent(jLabel3)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel4)
-                .addContainerGap())
-        );
-
-        jButton1.setText("Belanja Sekarang!");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
+        shoppingButton.setText("Belanja Sekarang!");
+        shoppingButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        shoppingButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        shoppingButton.addActionListener(evt -> {
+            this.dispose();
+            new Register().setVisible(true);
         });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(0, 9, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel2)
-                .addGap(25, 25, 25))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(123, 123, 123)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(29, 29, 29)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(26, 26, 26)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(60, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 408, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 1, Short.MAX_VALUE))
-        );
-
-        pack();
-    }// </editor-fold>                        
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        this.dispose(); // Tutup jendela registrasi
-        new Register().setVisible(true);
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    /**
-     * @param args the command line arguments
-     */
+        gbc.gridy = 2;
+        gbc.insets = new Insets(25, 0, 0, 0); 
+        mainPanel.add(shoppingButton, gbc);
+    }
+    
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -140,27 +89,12 @@ public class Start extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Start.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Start.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Start.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (Exception ex) {
             java.util.logging.Logger.getLogger(Start.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Start().setVisible(true);
-            }
+
+        java.awt.EventQueue.invokeLater(() -> {
+            new Start().setVisible(true);
         });
     }
-
-    private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
 }
