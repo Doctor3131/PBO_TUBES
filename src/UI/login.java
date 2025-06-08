@@ -136,22 +136,24 @@ public class Login extends javax.swing.JFrame {
     private void jButtonLoginActionPerformed(java.awt.event.ActionEvent evt) {
         String email = jTextFieldEmail.getText().trim();
         String password = jTextFieldPassword.getText().trim();
-
-        if (email.equals("masukkan username") || email.isEmpty() || password.equals("masukkan password") || password.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Mohon isi semua field", "Peringatan", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
+        
         int authStatus = loginController.authenticateUser(email, password);
 
-        if (authStatus == LoginController.AUTH_SUCCESS) {
-            JOptionPane.showMessageDialog(this, "Login berhasil!");
-            new Dashboard().setVisible(true);
-            this.dispose(); 
-        } else if (authStatus == LoginController.AUTH_INVALID_CREDENTIALS){
-            JOptionPane.showMessageDialog(this, "Email atau password salah", "Login Gagal", JOptionPane.ERROR_MESSAGE);
-        } else {
-            JOptionPane.showMessageDialog(this, "Terjadi kesalahan saat otentikasi.", "Login Gagal", JOptionPane.ERROR_MESSAGE);
+        switch (authStatus) {
+            case LoginController.AUTH_SUCCESS:
+                JOptionPane.showMessageDialog(this, "Login berhasil!");
+                new Dashboard().setVisible(true);
+                this.dispose();
+            case LoginController.AUTH_BLANK:
+                JOptionPane.showMessageDialog(this, "Mohon isi semua field", "Peringatan", JOptionPane.WARNING_MESSAGE);
+                break;
+            case LoginController.AUTH_INVALID_CREDENTIALS:
+                JOptionPane.showMessageDialog(this, "Email atau password salah", "Login Gagal", JOptionPane.ERROR_MESSAGE);
+                break;
+            default:
+                JOptionPane.showMessageDialog(this, "Terjadi kesalahan saat otentikasi.", "Login Gagal", JOptionPane.ERROR_MESSAGE);
+                break;
+                
         }
     }
 
