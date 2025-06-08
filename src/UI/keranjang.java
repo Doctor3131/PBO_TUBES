@@ -8,12 +8,12 @@ import models.CartItem;
 import models.Produk;
 import models.Transaksi;
 
-public class keranjang extends javax.swing.JDialog {
+public class Keranjang extends javax.swing.JDialog {
     private final CartController cartController;
     private JPanel panelIsi;
     private JLabel totalLabel;
 
-    public keranjang(Frame parent, CartController cartController) {
+    public Keranjang(Frame parent, CartController cartController) {
         super(parent, "Keranjang Belanja", true);
         this.cartController = cartController;
 
@@ -177,7 +177,7 @@ public class keranjang extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(keranjang.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Keranjang.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
 
         java.awt.EventQueue.invokeLater(() -> {

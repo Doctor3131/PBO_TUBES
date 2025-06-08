@@ -5,11 +5,11 @@ import javax.swing.JOptionPane;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
-public class login extends javax.swing.JFrame {
+public class Login extends javax.swing.JFrame {
 
     private LoginController loginController;
 
-    public login() {
+    public Login() {
         setTitle("Dashboard Produk");
         setSize(800, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -146,7 +146,7 @@ public class login extends javax.swing.JFrame {
 
         if (authStatus == LoginController.AUTH_SUCCESS) {
             JOptionPane.showMessageDialog(this, "Login berhasil!");
-            new dashboard2().setVisible(true);
+            new Dashboard().setVisible(true);
             this.dispose(); 
         } else if (authStatus == LoginController.AUTH_INVALID_CREDENTIALS){
             JOptionPane.showMessageDialog(this, "Email atau password salah", "Login Gagal", JOptionPane.ERROR_MESSAGE);
@@ -164,19 +164,20 @@ public class login extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Login.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new login().setVisible(true);
+                new Login().setVisible(true);
             }
         });
+    
     }
 
     private javax.swing.JButton jButtonLogin;

@@ -9,16 +9,18 @@ import controllers.CartController;
 import models.CartItem;
 import models.Produk;
 
-public class dashboard2 extends javax.swing.JFrame {
+public class Dashboard extends javax.swing.JFrame {
 
     private JPanel panelProduk;
     private JScrollPane scrollPane;
     private final List<CartItem> keranjang = new ArrayList<>();
     private final DashboardController dashboardController;
     private JTextField searchField;
+    private CartController cartController;
 
-    public dashboard2() {
+    public Dashboard() {
         this.dashboardController = new DashboardController(keranjang);
+        this.cartController = new CartController(keranjang);
         dashboardController.setAddToCartStatusCallback(this::handleAddToCartStatus);
 
         setTitle("Dashboard Produk");
@@ -52,8 +54,7 @@ public class dashboard2 extends javax.swing.JFrame {
         btnCari.addActionListener(e -> tampilkanProduk(searchField.getText()));
 
         btnKeranjang.addActionListener(e -> {
-            CartController cartController = new CartController(keranjang);
-            keranjang cartDialog = new keranjang(this, cartController);
+            Keranjang cartDialog = new Keranjang(this, cartController);
             cartDialog.setVisible(true);
 
             tampilkanProduk(searchField.getText());
@@ -170,11 +171,11 @@ public class dashboard2 extends javax.swing.JFrame {
                 }
             }
         } catch (Exception ex) {
-            java.util.logging.Logger.getLogger(dashboard2.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Dashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
 
         java.awt.EventQueue.invokeLater(() -> {
-            new dashboard2().setVisible(true);
+            new Dashboard().setVisible(true);
         });
     }
 }

@@ -1,18 +1,19 @@
 package UI;
 
-import java.util.ArrayList;
-import java.util.List;
-import services.SqlServices;
 import javax.swing.JOptionPane;
+import controllers.RegisterController;
 
-public class register extends javax.swing.JFrame {
+public class Register extends javax.swing.JFrame {
+    private RegisterController registerController;
 
-    
-
-    public register() {
+    public Register() {
+        setSize(800, 600);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
         initComponents();
+        this.registerController  = new RegisterController();
         
-        SqlServices service = new SqlServices();
+        initComponents();
         
         jTextFieldEmail.setText("masukkan username");
         jTextFieldEmail.setForeground(java.awt.Color.GRAY);
@@ -74,8 +75,6 @@ public class register extends javax.swing.JFrame {
     }
 
     
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jLabelEmail = new javax.swing.JLabel();
@@ -220,19 +219,17 @@ public class register extends javax.swing.JFrame {
         );
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>                        
 
     private void jButtonLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonLoginActionPerformed
-        new login().setVisible(true); // buka frame login
+        new Login().setVisible(true); // buka frame Login
         dispose(); // tutup frame saat ini
     }//GEN-LAST:event_jButtonLoginActionPerformed
 
     private void jTextFieldAlamatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldAlamatActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldAlamatActionPerformed
 
     private void jTextFieldEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldEmailActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldEmailActionPerformed
 
     private void jButtonRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRegisterActionPerformed
@@ -240,28 +237,30 @@ public class register extends javax.swing.JFrame {
         String password = jTextFieldPassword.getText();
         String alamat = jTextFieldAlamat.getText();
 
-        // Validasi input
-        if(email.isEmpty() || password.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "Email dan Password harus diisi!");
+        int message = registerController.handleRegistration(email, password, alamat);
+
+        if (message == 1) { 
+            JOptionPane.showMessageDialog(this, "Mohon isi semua field", "Peringatan", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        // Buat akun baru dan simpan ke database
-        account newAcc = new account(email, password, alamat, 10000); // saldo awal 0
-        service serv = new service();
-        if (serv.isEmailExist(email)) {
+        else if (message == 2) {
+            JOptionPane.showMessageDialog(this, "Peringatan Gunakan Format email yang benar", "Peringatan", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        else if (message == 3) {
             JOptionPane.showMessageDialog(null, "Email sudah digunakan!");
             return;
-        } else {
-            serv.add(newAcc);
+        } 
+        else {
+            JOptionPane.showMessageDialog(null, "Registrasi berhasil! SIlahkan Login!");
+            this.dispose(); // Tutup jendela registrasi
+            new Login().setVisible(true);
+            jTextFieldEmail.setText("");
+            jTextFieldPassword.setText("");
+            jTextFieldAlamat.setText("");
         }
-
-        JOptionPane.showMessageDialog(null, "Registrasi berhasil! SIlahkan login!");
-        this.dispose(); // Tutup jendela registrasi
-        new login().setVisible(true);
-        jTextFieldEmail.setText("");
-        jTextFieldPassword.setText("");
-        jTextFieldAlamat.setText("");
     }//GEN-LAST:event_jButtonRegisterActionPerformed
 
     /**
@@ -281,14 +280,26 @@ public class register extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(register.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Register.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(register.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Register.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(register.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Register.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(register.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Register.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
         //</editor-fold>
         //</editor-fold>
@@ -297,7 +308,7 @@ public class register extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new register().setVisible(true);
+                new Register().setVisible(true);
             }
         });
     }

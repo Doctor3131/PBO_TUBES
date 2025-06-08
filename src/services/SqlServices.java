@@ -186,4 +186,48 @@ public class SqlServices {
             return false;
         }
     }
+    public boolean isEmailExist(String email) {
+        String query = "SELECT COUNT(*) FROM accounts WHERE email = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            
+            ps.setString(1, email);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Database error during email check: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return false;
+    }
+
+    /**
+     * Adds a new user account to the database.
+     * This method is called from the registration form after validating the input.
+     * @param email The user's email.
+     * @param password The user's password.
+     * @param alamat The user's shipping address.
+     */
+    public void add(String email, String password, String alamat) {
+        // As seen in the register.java file, a default starting balance is provided.
+        double startingBalance = 100000; 
+        String query = "INSERT INTO accounts (email, password, alamat, saldo) VALUES (?, ?, ?, ?)";
+        
+        try (Connection conn = getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            
+            ps.setString(1, email);
+            ps.setString(2, password);
+            ps.setString(3, alamat);
+            ps.setDouble(4, startingBalance);
+            
+            ps.executeUpdate();
+            
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Failed to register account: " + e.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
 }
