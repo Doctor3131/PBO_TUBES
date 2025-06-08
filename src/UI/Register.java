@@ -5,21 +5,15 @@ import controllers.RegisterController;
 
 public class Register extends javax.swing.JFrame {
     private RegisterController registerController;
-    private Login login; 
 
     public Register() {
-        setSize(800, 600);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
         initComponents();
         this.registerController  = new RegisterController();
-        this.login = new Login(this);
-
-        initComponents();
         
+        setLocationRelativeTo(null);
+
         jTextFieldEmail.setText("masukkan username");
         jTextFieldEmail.setForeground(java.awt.Color.GRAY);
-
         jTextFieldEmail.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 if (jTextFieldEmail.getText().equals("masukkan username")) {
@@ -38,7 +32,6 @@ public class Register extends javax.swing.JFrame {
         
         jTextFieldPassword.setText("masukkan password");
         jTextFieldPassword.setForeground(java.awt.Color.GRAY);
-
         jTextFieldPassword.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 if (jTextFieldPassword.getText().equals("masukkan password")) {
@@ -57,7 +50,6 @@ public class Register extends javax.swing.JFrame {
         
         jTextFieldAlamat.setText("masukkan alamat pengiriman");
         jTextFieldAlamat.setForeground(java.awt.Color.GRAY);
-
         jTextFieldAlamat.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
                 if (jTextFieldAlamat.getText().equals("masukkan alamat pengiriman")) {
@@ -73,10 +65,8 @@ public class Register extends javax.swing.JFrame {
                 }
             }
         });
-       
     }
 
-    
     private void initComponents() {
 
         jLabelEmail = new javax.swing.JLabel();
@@ -105,11 +95,11 @@ public class Register extends javax.swing.JFrame {
             }
         });
 
-        jLabelPassword.setFont(new java.awt.Font("Segoe UI", 0, 14)); 
+        jLabelPassword.setFont(new java.awt.Font("Segoe UI", 0, 14));
         jLabelPassword.setText("Password");
 
         jButtonRegister.setBackground(new java.awt.Color(130, 207, 255));
-        jButtonRegister.setFont(new java.awt.Font("Segoe UI", 1, 14)); 
+        jButtonRegister.setFont(new java.awt.Font("Segoe UI", 1, 14));
         jButtonRegister.setForeground(new java.awt.Color(255, 255, 255));
         jButtonRegister.setText("REGISTER");
         jButtonRegister.addActionListener(new java.awt.event.ActionListener() {
@@ -129,7 +119,7 @@ public class Register extends javax.swing.JFrame {
             }
         });
 
-        jLabelAlamat.setFont(new java.awt.Font("Segoe UI", 0, 14)); 
+        jLabelAlamat.setFont(new java.awt.Font("Segoe UI", 0, 14));
         jLabelAlamat.setText("Alamat");
 
         jTextFieldAlamat.addActionListener(new java.awt.event.ActionListener() {
@@ -142,7 +132,7 @@ public class Register extends javax.swing.JFrame {
         jPanel3.setPreferredSize(new java.awt.Dimension(300, 61));
 
         jLabelNamaSistem.setBackground(new java.awt.Color(255, 255, 255));
-        jLabelNamaSistem.setFont(new java.awt.Font("ROG Fonts", 1, 18));
+        jLabelNamaSistem.setFont(new java.awt.Font("ROG Fonts", 1, 18)); 
         jLabelNamaSistem.setForeground(new java.awt.Color(255, 255, 255));
         jLabelNamaSistem.setText("SIRIEL SHOP");
 
@@ -221,19 +211,8 @@ public class Register extends javax.swing.JFrame {
         );
 
         pack();
-    }
-
-    private void jButtonLoginActionPerformed(java.awt.event.ActionEvent evt) {
-        login.setVisible(rootPaneCheckingEnabled);
-        dispose(); 
-    }
-
-    private void jTextFieldAlamatActionPerformed(java.awt.event.ActionEvent evt) {
-    }
-
-    private void jTextFieldEmailActionPerformed(java.awt.event.ActionEvent evt) {
-    }
-
+    }                 
+    
     private void jButtonRegisterActionPerformed(java.awt.event.ActionEvent evt) {
         String email = jTextFieldEmail.getText();
         String password = jTextFieldPassword.getText();
@@ -241,30 +220,34 @@ public class Register extends javax.swing.JFrame {
 
         int message = registerController.handleRegistration(email, password, alamat);
 
-        if (message == 1) { 
-            JOptionPane.showMessageDialog(this, "Mohon isi semua field", "Peringatan", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        else if (message == 2) {
-            JOptionPane.showMessageDialog(this, "Peringatan Gunakan Format email yang benar", "Peringatan", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-
-        else if (message == 3) {
-            JOptionPane.showMessageDialog(null, "Email sudah digunakan!");
-            return;
-        } 
-        else {
-            JOptionPane.showMessageDialog(null, "Registrasi berhasil! SIlahkan Login!");
-            this.dispose(); 
-            new Login(this).setVisible(true);
-            jTextFieldEmail.setText("");
-            jTextFieldPassword.setText("");
-            jTextFieldAlamat.setText("");
+        switch (message) {
+            case RegisterController.EMPTY_FIELDS:
+                JOptionPane.showMessageDialog(this, "Mohon isi semua field", "Peringatan", JOptionPane.WARNING_MESSAGE);
+                break;
+            case RegisterController.INVALID_EMAIL_FORMAT:
+                JOptionPane.showMessageDialog(this, "Peringatan: Gunakan format email yang benar", "Peringatan", JOptionPane.WARNING_MESSAGE);
+                break;
+            case RegisterController.EMAIL_ALREADY_EXISTS:
+                JOptionPane.showMessageDialog(null, "Email sudah digunakan!");
+                break;
+            case RegisterController.REGISTRATION_SUCCESS:
+                JOptionPane.showMessageDialog(null, "Registrasi berhasil! Silahkan Login!");
+                this.dispose(); 
+                new Login(this).setVisible(true); 
+                break;
+            default:
+                JOptionPane.showMessageDialog(this, "Terjadi kesalahan yang tidak diketahui.", "Error", JOptionPane.ERROR_MESSAGE);
+                break;
         }
     }
 
+    private void jButtonLoginActionPerformed(java.awt.event.ActionEvent evt) {
+        new Login(this).setVisible(true); 
+        dispose(); 
+    }
+    
+    private void jTextFieldAlamatActionPerformed(java.awt.event.ActionEvent evt) {}
+    private void jTextFieldEmailActionPerformed(java.awt.event.ActionEvent evt) {}
     public static void main(String args[]) {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -288,7 +271,6 @@ public class Register extends javax.swing.JFrame {
             }
         });
     }
-
     private javax.swing.JButton jButtonLogin;
     private javax.swing.JButton jButtonRegister;
     private javax.swing.JLabel jLabelAlamat;
