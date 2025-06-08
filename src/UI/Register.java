@@ -7,7 +7,6 @@ public class Register extends javax.swing.JFrame {
     private RegisterController registerController;
     private Login login; 
 
-
     public Register() {
         setSize(800, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
