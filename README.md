@@ -64,12 +64,15 @@ ___
 1. Download dan tambahkan file mysql-connector.jar for java versi terbaru. [Link to download](https://dev.mysql.com/downloads/connector/j/). (jika tidak bisa, coba versi 8.3 yang ada di archive)
 
 2. Buka NetBeans -> projects -> FetchSearchProduct -> Libraries. click kanan di Libraries dan pilih Add JAR/Folder
+
     <img src="image.png" width="300">
 
 3. Pada menu pop-up, arahkan dimana file.jar berada, jika sudah ditemukan maka click file nya, lalu click open
+
     <img src="image-2.png" width="800">
 
 4. Jika berhasil, maka file.jar akan muncul di Libraries
+
     <img src="image-3.png" width="400">
 ___
 
