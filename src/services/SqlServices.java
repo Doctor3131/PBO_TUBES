@@ -71,7 +71,7 @@ public class SqlServices {
         }
         return productList;
     }
-
+  
     public int reduceProductStock(int productId, int quantityToReduce) {
         String queryCekStok = "SELECT stok FROM produk_elektronik WHERE id = ? FOR UPDATE";
         String queryUpdateStok = "UPDATE produk_elektronik SET stok = ? WHERE id = ?";

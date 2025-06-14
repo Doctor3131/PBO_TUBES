@@ -10,7 +10,8 @@ public class Produk {
     private int stok; 
 
     public Produk(int id, String sku, String namaProduk, 
-                  String kategori, String deskripsi, double harga, int stok) {
+                  String kategori, String deskripsi, 
+                  double harga, int stok) {
         this.id = id;
         this.sku = sku;
         this.namaProduk = namaProduk;

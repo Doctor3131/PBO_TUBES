@@ -13,15 +13,16 @@ ___
 
 # <div align="center">Sequence Diagram Login</div>
 ```mermaid 
-sequenceDiagram
+sequenceDiagram 
     actor User
-    participant StartUI as "start: UI"
-    participant RegisterUI as "Register: UI"
-    participant RegisterController as "regControl: RegisterController"
-    participant LoginUI as "login: UI"
-    participant LoginController as "loginControl: LoginController"
-    participant SQL as "sqlServices: SqlServices"
+    participant StartUI as ":S tart"
+    participant RegisterUI as ":Register"
+    participant RegisterController as ":RegisterController"
+    participant LoginUI as ":Login"
+    participant LoginController as ":LoginController"
+    participant SQL as ":SqlServices"
     participant DB as "Database"
+    participant DashboardUI as ":Dashboard"
 
     User->>StartUI: Membuka Aplikasi
     activate StartUI
@@ -90,13 +91,13 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     actor User
-    participant DashboardUI as "Dashboard: UI"
-    participant DashboardController as "dashControl: DashboardController"
-    participant KeranjangUI as "keranjang: UI"
-    participant KeranjangController as "cartControl: KeranjangController"
-    participant SQL as "sqlServices: SqlServices"
+    participant DashboardUI as ":Dashboard"
+    participant DashboardController as ":DashboardController"
+    participant KeranjangUI as ":keranjang"
+    participant KeranjangController as ":KeranjangController"
+    participant SQL as ":SqlServices"
     participant DB as "Database"
-    participant Transaksi as "transaksi: Transaksi"
+    participant Transaksi as ":Transaksi"
 
     activate DashboardUI
     DashboardUI->>DashboardController: getFilteredProducts(keyword)
