@@ -1,5 +1,5 @@
 package models;
-
+ 
 public class CartItem {
     private Produk produk;
     private int quantity;
@@ -38,3 +38,5 @@ public class CartItem {
                '}';
     }
 }
+
+

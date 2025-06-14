@@ -9,7 +9,8 @@ public class Produk {
     private double harga;
     private int stok; 
 
-    public Produk(int id, String sku, String namaProduk, String kategori, String deskripsi, double harga, int stok) {
+    public Produk(int id, String sku, String namaProduk, 
+                  String kategori, String deskripsi, double harga, int stok) {
         this.id = id;
         this.sku = sku;
         this.namaProduk = namaProduk;
