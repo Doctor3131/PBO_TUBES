@@ -165,6 +165,7 @@ public class SqlServices {
             return false;
         }
     }
+    
     public boolean cekUser(String email, String password) {
 
         String query = "SELECT password FROM accounts WHERE email = ?";
@@ -186,6 +187,7 @@ public class SqlServices {
             return false;
         }
     }
+    
     public boolean isEmailExist(String email) {
         String query = "SELECT COUNT(*) FROM accounts WHERE email = ?";
         try (Connection conn = getConnection();
@@ -203,13 +205,6 @@ public class SqlServices {
         return false;
     }
 
-    /**
-     * Adds a new user account to the database.
-     * This method is called from the registration form after validating the input.
-     * @param email The user's email.
-     * @param password The user's password.
-     * @param alamat The user's shipping address.
-     */
     public void add(String email, String password, String alamat) {
         // As seen in the register.java file, a default starting balance is provided.
         double startingBalance = 100000; 
