@@ -19,9 +19,15 @@ public class RegisterController {
     }
 
     public int handleRegistration(String email, String password, String alamat) {
-        if (email == null || email.trim().isEmpty() || email.equals("masukkan username") ||
-            password == null || password.trim().isEmpty() || password.equals("masukkan password") ||
-            alamat == null || alamat.trim().isEmpty() || alamat.equals("masukkan alamat pengiriman")) {
+        if (email == null || 
+            email.trim().isEmpty() || 
+            email.equals("masukkan username") ||
+            password == null || 
+            password.trim().isEmpty() || 
+            password.equals("masukkan password") ||
+            alamat == null || 
+            alamat.trim().isEmpty() || 
+             alamat.equals("masukkan alamat pengiriman")) {
             return EMPTY_FIELDS;
         }
 
